@@ -123,7 +123,10 @@ function App(): JSX.Element {
 
         dispatch({ type: 'SIGN_IN', isSignedIn: true });
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' })
+      signOut: async () => {
+        await Storage.remove("token");
+        dispatch({ type: 'SIGN_OUT'})
+      }
     }),
     []
   );

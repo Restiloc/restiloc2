@@ -7,18 +7,18 @@ type Props = {
 
 export default function Logo(prop: Props): JSX.Element {
 
-	let logo = prop.minimized ? "logo-small.png" : "logo.png";
+	let logo = prop.minimized ? require("./logo-small.png") : require("./logo.png");
 	
 	const style = StyleSheet.create({
 		logo: {
-			...prop.css,
-			aspectRatio: 1.5,
 			resizeMode: "contain",
-			alignSelf: "center"
+			aspectRatio: 1.5,
+			alignSelf: "center",
+			...prop.css
 		}
 	});
 
 	return (
-			<Image source={ require(`./logo.png`) } style={ style.logo } />
+			<Image source={logo} style={ style.logo } />
 	);
 }

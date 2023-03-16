@@ -4,6 +4,7 @@ import Storage from "src/Storage";
 import { useEffect, useState } from "react";
 import Mission from "src/components/Mission";
 import Navbar from "src/components/Navbar";
+import Header from "src/components/Header";
 
 const { width, height } = Dimensions.get("window");
 
@@ -62,6 +63,7 @@ export default function Planning(props: PlanningProps): JSX.Element {
 	
 	return (
 		<View style={styles.view}>
+			<Header />
 			<ScrollView style={styles.mission}>
 				{
 					missions.map((mission: Mission) => {
