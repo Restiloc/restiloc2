@@ -49,6 +49,7 @@ export default function Settings(props: SettingsProps): JSX.Element {
 			.then((data: Me) => {
 				if (data.message === "Unauthenticated.") {
 					console.error("Invalid token...");
+					signOut();
 					return;
 				}
 				setExpert(data);

@@ -1,7 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import Colors from 'src/Colors';
 
+const { width, height } = Dimensions.get("window");
+
 export type MissionProps = {
+	navigation: any,
 	mission: {
 		id: number;
 		dateMission: string;
@@ -19,16 +22,26 @@ export type MissionProps = {
 }
 
 export default function Mission(props: MissionProps): JSX.Element {
+
+	const toMission = () => {
+		console.log("Redirecting to mission #" + props.mission.id + " with the following payload: " + JSON.stringify(props.mission))
+		props.navigation.navigate("mission", {
+			id: props.mission.id,
+			route: props.mission.route, 
+			mission: props.mission 
+		});
+	}
+
+	const format = {
+		date: (props.mission.dateMission ?? "").split("-").reverse().join("/"),
+		time: (props.mission.startedAt ?? "").split(":").slice(0, 2).join("h")
+	}
+
 	return (
-		<View key={props.mission.id} style={styles.card}>
-			<Text style={styles.color}>{props.mission.id}</Text>
-			<Text style={styles.color}>{props.mission.dateMission}</Text>
-			<Text style={styles.color}>{props.mission.startedAt}</Text>
-			<Text style={styles.color}>{props.mission.kilometersCounter}</Text>
-			<Text style={styles.color}>{props.mission.nameExpertFile}</Text>
-			<Text style={styles.color}>{props.mission.isFinished}</Text>
-			<Text style={styles.color}>{props.mission.route}</Text>
-		</View>
+		<TouchableOpacity onPress={toMission} style={styles.card}>
+			<Text style={styles.color}>Mission #{props.mission.id}</Text>
+			<Text style={styles.color}>le {format.date} à {format.time}</Text>
+		</TouchableOpacity>
 	)
 }
 
@@ -38,9 +51,14 @@ const styles = StyleSheet.create({
 	},
 	card: {
 		color: "black",
-		backgroundColor: Colors.Error,
-		borderRadius: 10,
-		margin: 10,
-		padding: 10
+		backgroundColor: Colors.Mission,
+		height: 100,
+		width: width - 40,
+		borderColor: Colors.Details,
+		borderWidth: 1,
+		flex: 1,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-evenly",
 	}
 })

@@ -9,6 +9,7 @@ import Landing from 'screens/Landing';
 import Login from 'screens/Login';
 import Storage from 'src/Storage';
 import Navbar from 'src/components/Navbar';
+import Mission from 'src/screens/Mission';
 import Planning from 'src/screens/Planning';
 import Settings from 'src/screens/Settings';
 import Statistics from 'src/screens/Statistics';
@@ -143,6 +144,7 @@ function App(): JSX.Element {
         ) : (
           <>
             <Stack.Screen name="planning" component={ Planning } options={{ headerShown: false, animation:'none' }} />
+            <Stack.Screen name="mission" component={ Mission } options={{ headerShown: false, animation:'default' }} />
             <Stack.Screen name="statistics" component={ Statistics } options={{ headerShown: false, animation:'none' }} />
             <Stack.Screen name="settings" component={ Settings } options={{ headerShown: false, animation:'none' }} />
           </>
