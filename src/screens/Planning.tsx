@@ -7,7 +7,7 @@ import Navbar from "src/components/Navbar";
 
 const { width, height } = Dimensions.get("window");
 
-type DashboardProps = {
+type PlanningProps = {
 	navigation: any;
 }
 
@@ -31,7 +31,7 @@ type Mission = {
  * 
  * @returns {JSX.Element} The login page.
  */
-export default function Dashboard(props: DashboardProps): JSX.Element {
+export default function Planning(props: PlanningProps): JSX.Element {
 
 	const [token, setToken] = useState("");
 	const [missions, setMissions] = useState([]);
@@ -63,7 +63,6 @@ export default function Dashboard(props: DashboardProps): JSX.Element {
 	return (
 		<View style={styles.view}>
 			<ScrollView style={styles.mission}>
-				<Text>Dashboard </Text>
 				{
 					missions.map((mission: Mission) => {
 						return (
@@ -72,7 +71,7 @@ export default function Dashboard(props: DashboardProps): JSX.Element {
 						})
 					}
 			</ScrollView>
-			<Navbar/>
+			<Navbar activeItem="planning" navigation={props.navigation} />
 		</View>
 	)
 }

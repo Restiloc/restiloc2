@@ -3,16 +3,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import React from 'react';
 
-import { useReducer, useState } from 'react';
-
-import {
-  StyleSheet,
-} from 'react-native';
+import { useReducer } from 'react';
 
 import Landing from 'screens/Landing';
 import Login from 'screens/Login';
 import Storage from 'src/Storage';
-import Dashboard from 'src/screens/Dashboard';
+import Navbar from 'src/components/Navbar';
+import Planning from 'src/screens/Planning';
+import Settings from 'src/screens/Settings';
+import Statistics from 'src/screens/Statistics';
 
 type meResponseType = {
 	message?: string,
@@ -37,8 +36,6 @@ const Stack = createNativeStackNavigator();
 export const AuthContext = React.createContext("auth");
 
 function App(): JSX.Element {
-
-  const [ loginError, setLoginError ] = useState(false);
 
   const [state, dispatch] = useReducer(
     (prevState: any, action: any): any => {
@@ -89,36 +86,15 @@ function App(): JSX.Element {
       let isSignedIn: boolean = true;
 
       if (data.message) {
+        Storage.remove("token");
         isSignedIn = false;
       }
-      Storage.remove("token");
 
       dispatch({ type: 'RESTORE_TOKEN', isSignedIn: isSignedIn });
     };
 
     bootstrapAsync();
   }, []);
-
-  const styles = StyleSheet.create({
-    sectionContainer: {
-      marginTop: 32,
-      paddingHorizontal: 24,
-    },
-    sectionTitle: {
-      fontSize: 24,
-      fontWeight: '600',
-    },
-    sectionDescription: {
-      marginTop: 8,
-      fontSize: 18,
-      fontWeight: '400',
-    },
-    highlight: {
-      fontWeight: '700',
-    },
-  });
-
-  console.log(state)
 
   const authContext = React.useMemo(
     () => ({
@@ -159,11 +135,13 @@ function App(): JSX.Element {
         {state.isSignedIn === false ? (
           <>
             <Stack.Screen name="landing" component={ Landing } options={{ headerShown: false }} />
-            <Stack.Screen name="login" component={ Login } options={{ headerShown: false }} /> 
+            <Stack.Screen name="login" component={ Login } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }}/> 
           </>
         ) : (
           <>
-            <Stack.Screen name="dashboard" component={ Dashboard } options={{ headerShown: false }} />
+            <Stack.Screen name="planning" component={ Planning } options={{ headerShown: false, animation:'none' }} />
+            <Stack.Screen name="statistics" component={ Statistics } options={{ headerShown: false, animation:'none' }} />
+            <Stack.Screen name="settings" component={ Settings } options={{ headerShown: false, animation:'none' }} />
           </>
         )}      
         </Stack.Navigator>
