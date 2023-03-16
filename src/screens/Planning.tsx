@@ -13,7 +13,7 @@ type PlanningProps = {
 	navigation: any;
 }
 
-type Mission = {
+export type Mission = {
 	id: number;
 	dateMission: string;
 	startedAt?: string;
