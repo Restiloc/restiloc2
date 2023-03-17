@@ -1,14 +1,23 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity, GestureResponderEvent } from "react-native";
 import Colors from "src/Colors";
 
-type NavbarItemProps = {
+type Props = {
 	title: string,
 	image: string,
 	active: boolean,
 	navigation: any
 }
 
-export default function NavbarItem(props: NavbarItemProps): JSX.Element {
+/**
+ * This is the navbar item component.
+ * 
+ * @param title - The title of the navbar item.
+ * @param image - The image of the navbar item.
+ * @param active - If the navbar item is active.
+ * @param navigation - The navigation object.
+ * @returns JSX.Element - Rendered navbar item.
+ */
+export default function NavbarItem({ title, image, active, navigation }: Props): JSX.Element {
 
 	const styles = StyleSheet.create({
 		item: {
@@ -36,26 +45,27 @@ export default function NavbarItem(props: NavbarItemProps): JSX.Element {
 		}
 	})
 
-	let image;
+	let source;
 
-	switch (props.image) {
+	switch (image) {
 		case "planning":
-			image = require("./planning.png");
+			source = require("./planning.png");
 			break;
 		case "statistics":
-			image = require("./statistics.png");
+			source = require("./statistics.png");
 			break;
 		case "settings":
-			image = require("./settings.png");
+			source = require("./settings.png");
 			break;
 		default:
-			image = require("./planning.png");
+			source = require("./planning.png");
 			break;
 	}
 
-	if (props.active) {
+	if (active) {
 		styles.image = {
 			...styles.image,
+			// @ts-ignore
 			tintColor: Colors.Secondary
 		}
 		styles.text = {
@@ -64,22 +74,20 @@ export default function NavbarItem(props: NavbarItemProps): JSX.Element {
 		}
 	}
 
-	const handlePress = (e: GestureResponderEvent) => {
-		if (props.navigation?.navigate) {
-			// call the navigate method
-			props.navigation.navigate(props.title.toLowerCase());
-		} else {
-			console.error('Navigation object is not defined.');
-		}	
+	/**
+	 * Redirects to the corresponding page.
+	 */
+	const handlePress = () => {
+		navigation.navigate(title.toLowerCase());
 	}
 
 	return (
 		<TouchableOpacity style={ styles.item } onPress={handlePress}>
-			<Image source={ image } style={styles.image}/>
+			<Image source={ source } style={styles.image}/>
 			<Text style={styles.text}>
-				{ props.title ?? "NavbarItem" }
+				{ title ?? "NavbarItem" }
 			</Text>
-			{props.active ? (
+			{active ? (
           <>
 						<View style={styles.activeTab}></View>
           </>

@@ -1,33 +1,28 @@
-import { Dimensions, View, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import Colors from 'src/Colors'
 import NavbarItem from './NavbarItem'
 
-type NavbarProps = {
+type Props = {
 	navigation?: any,
 	activeItem: string
 }
 
-export default function Navbar(props: NavbarProps): JSX.Element {
+export default function Navbar({ navigation, activeItem }: Props): JSX.Element {
 
-	let items = ["Planning", "Statistics", "Settings"];
-
-	const navigateTo = (tab: string) => {
-		props.navigation.navigate("statistics")
-	}
+	const styles = StyleSheet.create({
+		navbar: {
+			height: 100,
+			backgroundColor: Colors.Details,
+			flexDirection: 'row',
+			justifyContent: 'space-around',
+		}
+	})
+	
+	const items = ["Planning", "Statistics", "Settings"];
 
 	return (
 		<View style={styles.navbar}>
-			{ items.map((item, index) => <NavbarItem key={index} title={item} image={item.toLowerCase()} active={item.toLowerCase() === props.activeItem} navigation={props.navigation} />) }
+			{ items.map((item, index) => <NavbarItem key={index} title={item} image={item.toLowerCase()} active={item.toLowerCase() === activeItem} navigation={navigation} />) }
 		</View>
 	)
-
 }
-
-const styles = StyleSheet.create({
-	navbar: {
-		height: 100,
-		backgroundColor: Colors.Details,
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-	}
-})

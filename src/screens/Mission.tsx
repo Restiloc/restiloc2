@@ -1,40 +1,49 @@
-import { Dimensions, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import Colors from "../Colors";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 import Storage from "src/Storage";
 import { useEffect, useState, useContext } from "react";
 import Navbar from "src/components/Navbar";
 import Header from "src/components/Header";
-import type { Mission } from "src/screens/Planning";
 import { AuthContext } from "../../App";
+import type { MissionType } from "../Types";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-type MissionProps = {
+type Props = {
 	navigation: any;
 	route: {
 		params: {
 			id: string;
 			route: string;
-			mission: Mission;
+			mission: MissionType;
 		}
 	};
 }
 
 /**
- * This is the login page of the app.
+ * This is page to view a mission.
  * 
- * @returns {JSX.Element} The login page.
+ * @param navigation - The navigation of the app.
+ * @param route - The route of the app.
+ * @returns {JSX.Element} Rendered mission page.
  */
-export default function Mission(props: MissionProps): JSX.Element {
+export default function Mission({ navigation, route }: Props): JSX.Element {
+
+	const styles = StyleSheet.create({
+		view: {
+			height: height,
+		},
+	});
 
 	const [mission, setMission] = useState();
-	const { id, route } = props.route.params;
-	const { signOut } = useContext(AuthContext);
+	const endpoint = route.params.route;
+	
+	// @ts-ignore
+	const { signOut } = useContext(AuthContext); 
 
 	useEffect(() => {
 		(async () => {
 			let token = await Storage.get("token");
-			fetch(route, {
+			fetch(endpoint, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -52,21 +61,13 @@ export default function Mission(props: MissionProps): JSX.Element {
 			})
 		})()
 	}, [])
-	
-	console.log(mission);
 
 	return (
 		<View style={styles.view}>
 			<Header />
 			<ScrollView>
 			</ScrollView>
-			<Navbar activeItem="" navigation={props.navigation} />
+			<Navbar activeItem="" navigation={navigation} />
 		</View>
 	)
 }
-
-const styles = StyleSheet.create({
-	view: {
-		height: height,
-	},
-});

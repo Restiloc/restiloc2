@@ -1,17 +1,11 @@
 import Button from "components/Button";
-import Input from "components/Input";
-import { Dimensions, SectionList, StyleSheet, Text, TextInput, View } from "react-native";
+import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Colors from "../Colors";
 import Logo from "components/Logo";
-import { useEffect, useState, useContext, useMemo } from "react";
-import Storage from "src/Storage";
+import { useState, useContext } from "react";
 import { AuthContext } from "./../../App";
 
-const { width, height } = Dimensions.get("window");
-
-type LoginProps = {
-	navigation: any;
-}
+const { height } = Dimensions.get("window");
 
 type Credentials = {
 	identifier: string,
@@ -21,20 +15,66 @@ type Credentials = {
 /**
  * This is the login page of the app.
  * 
- * @returns {JSX.Element} The login page.
+ * @param props - The props of the login page.
+ * @returns {JSX.Element} Rendered login page.
  */
-export default function Login(props: LoginProps): JSX.Element {
+export default function Login(): JSX.Element {
+
+	const styles = StyleSheet.create({
+		error: {
+			color: "black",
+			backgroundColor: "#FF9797",
+			padding: 10,
+			marginTop: -20,
+			width: 250,
+			textAlign: "center",
+			marginBottom: 20,
+			borderRadius: 10,
+		},
+		login: {
+			height: height,
+			backgroundColor: Colors.Primary,
+			flex: 1,
+			justifyContent: "center",
+			alignItems: "center",
+			gap: 10,
+		},
+		input: {
+			borderWidth: 1,
+			minWidth: 250,
+			borderRadius: 10,
+			color: "black",
+			padding: 10,
+		},
+		container: {
+			display: "flex",
+			flexDirection: "column",
+			justifyContent: "center",
+			alignItems: "center",
+			gap: 10,
+		},
+		label: {
+			color: "black",
+			fontSize: 16,
+			alignSelf: "flex-start",
+		}
+	});
 
 	const [loginError, setLoginError] = useState(false);
 	const [serverError, setServerError] = useState(false);
-	const [credentials, setCredentials] = useState<Credentials>({ identifier: "ale.hen", password: "password123" });
+	const [credentials, setCredentials] = useState<Credentials>({ 
+		identifier: "",
+		password: "" 
+	});
 	
+	// @ts-ignore
 	const { signIn } = useContext(AuthContext);
 	
-	const handleLogin = async () => {
+	async function handleLogin() {
 		try {
 			let state = await signIn(credentials);
-			if (!state) setLoginError(true);
+			if (!state)
+				setLoginError(true);
 		} catch (e) {
 			setServerError(true);
 		}
@@ -45,47 +85,24 @@ export default function Login(props: LoginProps): JSX.Element {
 			<Logo css={{ maxWidth: 250 }} />
 			{loginError && <Text style={styles.error}>Invalid credentials</Text>}
 			{serverError && <Text style={styles.error}>Server error</Text>}
-			<TextInput 
-				id="identifier"
-				style={styles.input}
-				placeholderTextColor={"black"}
-				onChangeText={text => setCredentials({ ...credentials, identifier: text })}
-			/>
-			<TextInput 
-				id="password"
-				style={styles.input}
-				placeholderTextColor={"black"}
-				onChangeText={text => setCredentials({ ...credentials, password: text })}
-			/>
-			<Button title="Login" onPress={handleLogin}/>
+			<View style={styles.container}>
+				<Text style={styles.label}>Email</Text>
+				<TextInput 
+					id="identifier"
+					style={styles.input}
+					placeholderTextColor={"black"}
+					onChangeText={text => setCredentials({ ...credentials, identifier: text })}
+				/>
+				<Text style={styles.label}>Mot de passe</Text>
+				<TextInput 
+					id="password"
+					secureTextEntry={true}
+					style={styles.input}
+					placeholderTextColor={"black"}
+					onChangeText={text => setCredentials({ ...credentials, password: text })}
+				/>
+				<Button title="Login" onPress={handleLogin}/>
+			</View>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	error: {
-		color: "black",
-		backgroundColor: "#FF9797",
-		padding: 10,
-		marginTop: -20,
-		width: 250,
-		textAlign: "center",
-		marginBottom: 20,
-		borderRadius: 10,
-	},
-	login: {
-		height: height,
-		backgroundColor: Colors.Primary,
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		gap: 10,
-	},
-	input: {
-		borderWidth: 1,
-		minWidth: 250,
-		borderRadius: 10,
-		color: "black",
-		padding: 10,
-	}
-});

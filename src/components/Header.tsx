@@ -1,9 +1,11 @@
-import { Image, StyleSheet } from "react-native";
 import Logo from "./Logo";
 
-type Props = {};
-
-export default function Header(prop: Props): JSX.Element {
+/**
+ * This is the header component.
+ * 
+ * @returns JSX.Element - Rendered header component.
+ */
+export default function Header(): JSX.Element {
 	return (
 			<Logo minimized={true} css={
 				{

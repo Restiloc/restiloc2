@@ -2,57 +2,40 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Button from "components/Button";
 import Logo from "components/Logo";
 import Colors from "../Colors";
-import { useState } from "react";
 
 const { height } = Dimensions.get("window");
 
-type LandingProps = {
+type Props = {
 	navigation: any;
 }
 
 /**
  * This is the landing page of the app.
  * 
- * @returns {JSX.Element} The landing page.
+ * @param navigation - The navigation object.
+ * @returns {JSX.Element} Rendered landing page.
  */
-export default function Landing(props: LandingProps): JSX.Element {
+export default function Landing({ navigation }: Props): JSX.Element {
 
-	const [token, setToken] = useState(null);
-
-	const toLogin = () => props.navigation.navigate("login");
-
-	return (
-		<View style={styles.landing}>
-			<View style={styles.top}>
-				<Logo />
-			</View>
-			<View style={styles.bot}>
-				<Text style={styles.bot.title}>Welcome to Restiloc!</Text>
-				<Text style={styles.bot.subtitle}>Restiloc is a platform for finding and sharing vehicles locations.</Text>
-			 	<Button title="Login" onPress={toLogin} />
-			</View>
-		</View>
-	);
-}
-
-const styles = StyleSheet.create({
-	landing: {
-		height: height,
-		backgroundColor: Colors.Primary,
-	},
-	top: {
-		height: height / 2,
-		flex: 1,
-		justifyContent: "center",
-		backgroundColor: Colors.Primary
-	},
-	bot: {
-		height: height / 2,
-		backgroundColor: Colors.Secondary,
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		gap: 20,
+	const styles = StyleSheet.create({
+		container: {
+			height: height,
+			backgroundColor: Colors.Primary,
+		},
+		top: {
+			height: height / 2,
+			flex: 1,
+			justifyContent: "center",
+			backgroundColor: Colors.Primary
+		},
+		bottom: {
+			height: height / 2,
+			backgroundColor: Colors.Secondary,
+			flex: 1,
+			justifyContent: "center",
+			alignItems: "center",
+			gap: 20
+		},
 		title: {
 			fontSize: 32,
 		},
@@ -61,5 +44,20 @@ const styles = StyleSheet.create({
 			maxWidth: 300,
 			textAlign: "center",
 		}
-	},
-});
+	});
+
+	const toLogin = () => navigation.navigate("login");
+
+	return (
+		<View style={styles.container}>
+			<View style={styles.top}>
+				<Logo />
+			</View>
+			<View style={styles.bottom}>
+				<Text style={styles.title}>Welcome to Restiloc!</Text>
+				<Text style={styles.subtitle}>Restiloc is a platform for finding and sharing vehicles locations.</Text>
+			 	<Button title="Login" onPress={toLogin} />
+			</View>
+		</View>
+	);
+}
