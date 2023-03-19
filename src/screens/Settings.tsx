@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput } from "react-native";
+import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput, ActivityIndicator } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./../../App";
 import type { Expert, ExpertUpdate } from "../Types";
@@ -101,6 +101,8 @@ export default function Settings({ navigation }: Props): JSX.Element {
 		}
 	});
 
+	const [update, setUpdate] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [expert, setExpert] = useState<Expert>({} as Expert);
 	const [updateError, setUpdateError] = useState<boolean>(false);
 	const [serverError, setServerError] = useState<boolean>(false);
@@ -119,9 +121,9 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			return;
 		};
 		console.log("Edited details: " + accountDetails);
-		/** 
-		 * TODO: Update the expert using the /experts/{id} endpoint
-		 */	
+		if (accountDetails.phoneNumber && typeof accountDetails.phoneNumber === "string") {
+			accountDetails.phoneNumber = parseInt(accountDetails.phoneNumber);
+		}
 		let token = await Storage.get("token");
 		fetch(`https://restiloc.space/api/experts/${expert.id}`, {
 			method: "PUT",
@@ -132,15 +134,16 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			},
 			body: JSON.stringify(accountDetails)
 		}).then((response) => response.json())
-		.then((data) => {
-			if (data.message === "Expert updated successfully") {
-				setUpdateSuccess(true);
-			} else {
-				setUpdateError(true);
-			}
-		}).catch(() => {
-			setServerError(true);
-		})
+			.then((data) => {
+				if (data.message === "Expert updated successfully") {
+					setUpdateSuccess(true);
+					setUpdate(true);
+				} else {
+					setUpdateError(true);
+				}
+			}).catch(() => {
+				setServerError(true);
+			})
 	}
 
 	function init() {
@@ -152,7 +155,7 @@ export default function Settings({ navigation }: Props): JSX.Element {
 
 	useEffect(() => {
 		(async () => {
-			let token = await Storage.get("token");	
+			let token = await Storage.get("token");
 			fetch("https://restiloc.space/api/me", {
 				method: "GET",
 				headers: {
@@ -161,16 +164,18 @@ export default function Settings({ navigation }: Props): JSX.Element {
 					"Authorization": `Bearer ${token}`
 				}
 			}).then((response) => response.json())
-			.then((data: Expert) => {
-				if (data.message === "Unauthenticated.") {
-					console.error("Invalid token...");
-					signOut();
-					return;
-				}
-				setExpert(data);
-			})
+				.then((data: Expert) => {
+					if (data.message === "Unauthenticated.") {
+						console.error("Invalid token...");
+						signOut();
+						return;
+					}
+					setExpert(data);
+					setLoading(false);
+				})
 		})()
-	}, [])
+		setUpdate(false);
+	}, [update])
 
 	return (
 		<View style={styles.view}>
@@ -179,47 +184,51 @@ export default function Settings({ navigation }: Props): JSX.Element {
 				<Text style={styles.expert}>{expert.lastName} {expert.firstName}</Text>
 				<Text style={styles.email}>{expert.email}</Text>
 				<View style={styles.account}>
-					<Text style={styles.title}>Mes informations</Text>
-					<View style={styles.container}>
-					{noDetails && <Text style={styles.error}>Aucune modification effectuée</Text>}
-					{updateError && <Text style={styles.error}>La modification a échouée...</Text>}
-					{serverError && <Text style={styles.error}>Erreur de traitement...</Text>}
-					{updateSuccess && <Text style={styles.success}>Modification effectuée avec succès !</Text>}
-						<Text style={styles.label}>Nom</Text>
-						<TextInput 
-							id="lastname"
-							style={styles.input}
-							placeholderTextColor={"black"}
-							defaultValue={expert.lastName}
-							onChangeText={text => setAccountDetails({ ...accountDetails, lastName: text })}
-						/>
-						<Text style={styles.label}>Prenom</Text>
-						<TextInput 
-							id="firstname"
-							style={styles.input}
-							placeholderTextColor={"black"}
-							defaultValue={expert.firstName}
-							onChangeText={text => setAccountDetails({ ...accountDetails, firstName: text })}
-						/>
-						<Text style={styles.label}>Email</Text>
-						<TextInput 
-							id="email"
-							style={styles.input}
-							placeholderTextColor={"black"}
-							defaultValue={expert.email}
-							onChangeText={text => setAccountDetails({ ...accountDetails, email: text })}
-						/>
-						<Text style={styles.label}>Téléphone</Text>
-						<TextInput 
-							id="telephone"
-							style={styles.input}
-							placeholderTextColor={"black"}
-							defaultValue={expert.phoneNumber}
-							onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
-						/>
-						<SoftButton title="Sauvegarder" onPress={updateExpert} />
-						<SoftButton title="Se déconnecter" onPress={signOut} css={{ marginBottom: 20 }}/>
-					</View>
+					{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
+						<>
+							<Text style={styles.title}>Mes informations</Text>
+							<View style={styles.container}>
+								{noDetails && <Text style={styles.error}>Aucune modification effectuée</Text>}
+								{updateError && <Text style={styles.error}>La modification a échouée...</Text>}
+								{serverError && <Text style={styles.error}>Erreur de traitement...</Text>}
+								{updateSuccess && <Text style={styles.success}>Modification effectuée avec succès !</Text>}
+								<Text style={styles.label}>Nom</Text>
+								<TextInput
+									id="lastname"
+									style={styles.input}
+									placeholderTextColor={"black"}
+									defaultValue={expert.lastName}
+									onChangeText={text => setAccountDetails({ ...accountDetails, lastName: text })}
+								/>
+								<Text style={styles.label}>Prenom</Text>
+								<TextInput
+									id="firstname"
+									style={styles.input}
+									placeholderTextColor={"black"}
+									defaultValue={expert.firstName}
+									onChangeText={text => setAccountDetails({ ...accountDetails, firstName: text })}
+								/>
+								<Text style={styles.label}>Email</Text>
+								<TextInput
+									id="email"
+									style={styles.input}
+									placeholderTextColor={"black"}
+									defaultValue={expert.email}
+									onChangeText={text => setAccountDetails({ ...accountDetails, email: text })}
+								/>
+								<Text style={styles.label}>Téléphone</Text>
+								<TextInput
+									id="telephone"
+									style={styles.input}
+									placeholderTextColor={"black"}
+									defaultValue={expert.phoneNumber}
+									onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
+								/>
+								<SoftButton title="Sauvegarder" onPress={updateExpert} />
+								<SoftButton title="Se déconnecter" onPress={signOut} css={{ marginBottom: 20 }} />
+							</View>
+						</>
+					)}
 				</View>
 			</ScrollView>
 			<Navbar activeItem="settings" navigation={navigation} />

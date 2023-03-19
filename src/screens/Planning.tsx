@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import Colors from "../Colors";
 import Storage from "src/Storage";
 import { useEffect, useState, useContext } from "react";
@@ -43,6 +43,10 @@ export default function Planning({ navigation }: Props): JSX.Element {
 		}
 	});
 
+	const [missionsLoading, setMissionsLoading] = useState<boolean>(true);
+	const [todayMissionsLoading, setTodayMissionsLoading] = useState<boolean>(true);
+	const [missionsFetchFailed, setMissionsFetchFailed] = useState<boolean>(false);
+	const [todayMissionsFetchFailed, setTodayMissionsFetchFailed] = useState<boolean>(false);
 	const [token, setToken] = useState("");
 	const [missions, setMissions] = useState([]);
 	const [todayMissions, setTodayMissions] = useState([]);
@@ -62,14 +66,26 @@ export default function Planning({ navigation }: Props): JSX.Element {
 					"Accept": "application/json",
 					"Authorization": `Bearer ${token}`
 				}
-			}).then((response) => response.json())
+			})
+				.then((response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						setMissionsFetchFailed(true);
+					}
+				})
 				.then((data) => {
+					if (data === undefined) {
+						setMissionsFetchFailed(true);
+						return;
+					}
 					if (data.message === "Unauthenticated.") {
 						console.log("Token is invalid. Redirecting to login page.")
 						signOut();
 						return;
 					}
 					setMissions(data);
+					setMissionsLoading(false);
 				})
 			fetch("https://restiloc.space/api/me/missions?_date=today", {
 				method: "GET",
@@ -78,14 +94,26 @@ export default function Planning({ navigation }: Props): JSX.Element {
 					"Accept": "application/json",
 					"Authorization": `Bearer ${token}`
 				}
-			}).then((response) => response.json())
+			})
+				.then((response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						setTodayMissionsFetchFailed(true);
+					}
+				})
 				.then((data) => {
+					if (data === undefined) {
+						setTodayMissionsFetchFailed(true);
+						return;
+					}
 					if (data.message === "Unauthenticated.") {
 						console.log("Token is invalid. Redirecting to login page.")
 						signOut();
 						return;
 					}
 					setTodayMissions(data);
+					setTodayMissionsLoading(false);
 				})
 		})()
 	}, [token])
@@ -93,28 +121,38 @@ export default function Planning({ navigation }: Props): JSX.Element {
 	return (
 		<View style={styles.view}>
 			<Header />
-			<ScrollView style={styles.mission}>
-				<Text style={styles.title}>Missions du jour</Text>
-				{
-					!todayMissions || todayMissions.length === 0
-						? <Text style={styles.p}>Aucune mission pour aujourd'hui !</Text>
-						: todayMissions.map((mission: MissionType) => {
-							return (
-								<Mission mission={mission} key={mission.id} navigation={navigation} />
-							)
-						})
-				}
-				<Text style={styles.title}>Missions à venir</Text>
-				{
-					!missions || missions.length === 0
-						? <Text style={styles.p}>Aucune mission à venir !</Text>
-						: missions.map((mission: MissionType) => {
-							return (
-								<Mission mission={mission} key={mission.id} navigation={navigation} />
-							)
-						})
-				}
-			</ScrollView>
+			{
+				<ScrollView style={styles.mission}>
+					<Text style={styles.title}>Missions du jour</Text>
+					{
+						missionsFetchFailed
+							? <Text style={styles.p}>Une erreur est survenue lors du chargement des missions.</Text>
+							: missionsLoading
+								? <ActivityIndicator size="large" color={Colors.Secondary} />
+								: todayMissions.length === 0
+									? <Text style={styles.p}>Aucune mission pour aujourd'hui !</Text>
+									: todayMissions!.map((mission: MissionType) => {
+										return (
+											<Mission mission={mission} key={mission.id} navigation={navigation} />
+										)
+									})
+					}
+					<Text style={styles.title}>Missions à venir</Text>
+					{
+						todayMissionsFetchFailed
+							? <Text style={styles.p}>Une erreur est survenue lors du chargement des missions.</Text>
+							: todayMissionsLoading
+								? <ActivityIndicator size="large" color={Colors.Secondary} />
+								: missions.length === 0
+									? <Text style={styles.p}>Aucune mission à venir !</Text>
+									: missions!.map((mission: MissionType) => {
+										return (
+											<Mission mission={mission} key={mission.id} navigation={navigation} />
+										)
+									})
+					}
+				</ScrollView>
+			}
 			<Navbar activeItem="planning" navigation={navigation} />
 		</View>
 	)

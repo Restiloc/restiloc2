@@ -24,7 +24,7 @@ export default function SoftButton({ title, onPress, css }: Props): JSX.Element 
 			alignSelf: "center",
 		},
 		container: {
-			marginTop: 15,
+			marginTop: 5,
 			width: "100%",
 			backgroundColor: Colors.SettingBackground,
 			height: 75,

@@ -2,6 +2,7 @@
  * This is the type of the object returned by the API for a mission.
  */
 export type MissionType = {
+	message?: string;
 	id: number;
 	dateMission: string;
 	startedAt?: string;
@@ -9,10 +10,11 @@ export type MissionType = {
 	nameExpertFile: string;
 	isFinished: boolean;
 	route: string;
-	vehicle: [];
-	expert: [];
-	garage: [];
-	unavailability: [];
+	vehicle: Vehicle;
+	expert: Expert;
+	garage?: Garage;
+	client?: Client;
+	unavailability?: [];
 	pree: [];
 }
 
@@ -33,9 +35,56 @@ export type Expert = {
 	username: string,
 }
 
-export type ExpertUpdate = {
+export type Vehicle = {
+	message?: string,
+	id: number,
+	licensePlate: string,
+	color: string,
+	releaseYear: number,
+	route: string,
+	model: Model,
+	missions: MissionType[],
+}
+
+export type Model = {
+	id: number,
+	label: string,
+	brand: string,
+	route: string,
+}
+
+export type Garage = {
+	id: number,
+	name: string,
+	addressNumber: string,
+	street: string,
+	postalCode: string,
+	city: string,
+	phoneNumber: string,
+	latitude: number,
+	longitude: number,
+	url: string,
+}
+
+export type Client = {
+	id: number,
 	firstName: string,
 	lastName: string,
 	email: string,
 	phoneNumber: string,
+	addressNumber: string,
+	street: string,
+	postalCode: string,
+	city: string,
+	latitude: number,
+	longitude: number,
+	url: string,
+	mission?: MissionType,
+}
+
+export type ExpertUpdate = {
+	firstName: string,
+	lastName: string,
+	email: string,
+	phoneNumber: number|string,
 }

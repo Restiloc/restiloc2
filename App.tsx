@@ -13,19 +13,8 @@ import Mission from 'src/screens/Mission';
 import Planning from 'src/screens/Planning';
 import Settings from 'src/screens/Settings';
 import Statistics from 'src/screens/Statistics';
-
-type meResponseType = {
-	message?: string,
-	created_at: string,
-	email: string,
-	email_verified_at?: string,
-	firstName: string,
-	id: number,
-	lastName: string,
-	phoneNumber: string,
-	updated_at: string,
-	username: string,
-}
+import type { Expert } from 'src/Types';
+import History from 'src/screens/History';
 
 type credentials = {
   identifier: string,
@@ -83,7 +72,7 @@ function App(): JSX.Element {
         },
       }).then((r) => r.json())
 
-      let data: meResponseType = await response;
+      let data: Expert = await response;
       let isSignedIn: boolean = true;
 
       if (data.message) {
@@ -134,6 +123,7 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
+      {/* @ts-ignore */}
       <AuthContext.Provider value={authContext}>
         <Stack.Navigator>
         {state.isSignedIn === false ? (
@@ -144,11 +134,14 @@ function App(): JSX.Element {
         ) : (
           <>
             <Stack.Screen name="planning" component={ Planning } options={{ headerShown: false, animation:'none' }} />
-            <Stack.Screen name="mission" component={ Mission } options={{ headerShown: false, animation:'default' }} />
+            {/* @ts-ignore */}
+            <Stack.Screen name="mission" component={ Mission } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_bottom' }} />
             <Stack.Screen name="statistics" component={ Statistics } options={{ headerShown: false, animation:'none' }} />
             <Stack.Screen name="settings" component={ Settings } options={{ headerShown: false, animation:'none' }} />
+            {/* @ts-ignore */}
+            <Stack.Screen name="history" component={ History } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
           </>
-        )}      
+        )}
         </Stack.Navigator>
       </AuthContext.Provider>
     </NavigationContainer>

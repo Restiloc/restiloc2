@@ -23,7 +23,7 @@ export default function Login(): JSX.Element {
 	const styles = StyleSheet.create({
 		error: {
 			color: "black",
-			backgroundColor: "#FF9797",
+			backgroundColor: Colors.Error,
 			padding: 10,
 			marginTop: -20,
 			width: 250,
@@ -83,8 +83,8 @@ export default function Login(): JSX.Element {
 	return (
 		<View style={styles.login}>
 			<Logo css={{ maxWidth: 250 }} />
-			{loginError && <Text style={styles.error}>Invalid credentials</Text>}
-			{serverError && <Text style={styles.error}>Server error</Text>}
+			{loginError && <Text style={styles.error}>Identifiants invalides</Text>}
+			{serverError && <Text style={styles.error}>Erreur de traitement...</Text>}
 			<View style={styles.container}>
 				<Text style={styles.label}>Email</Text>
 				<TextInput 
