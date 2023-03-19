@@ -6,6 +6,7 @@ import { Vehicle } from "src/Types";
 import { useEffect, useState, useContext } from "react";
 import Storage from "src/Storage";
 import { AuthContext } from "../../App";
+import Mission from "src/components/Mission";
 
 const { height } = Dimensions.get("window");
 
@@ -39,41 +40,39 @@ export default function History({ navigation, route }: Props): JSX.Element {
 			backgroundColor: Colors.Primary
 		},
 		void: {
-			height: height - 350,
-			textAlign: "center",
-			textAlignVertical: "center",
-			color: Colors.Secondary,
-			fontSize: 30,
+			fontSize: 16,
+			color: "black",
+			marginLeft: 20,
+			marginTop: 20,
+		},
+		details: {
+			marginLeft: 20,
+			marginRight: 20,
+			marginTop: 30,
+			flexDirection: "row",
+		},
+		column: {
+			flex: 1,
+			flexDirection: "column",
+			alignItems: "center",
+			gap: 10,
+		},
+		text: {
+			fontSize: 16,
+			color: Colors.Details,
+		},
+		title: {
+			fontSize: 28,
+			color: Colors.Details,
 			fontWeight: "bold",
+			marginLeft: 20,
+			marginTop: 20,
 		}
 	});
 
 	useEffect(() => {
-		(async () => {
-			let token = await Storage.get("token");
-			fetch(`${endpoint}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json",
-					"Authorization": `Bearer ${token}`
-				}
-			}).then((response) => {
-				if (!response.ok) {
-					setVehicle(route.params.vehicle);
-				}
-				return response.json()
-			})
-				.then((data: Vehicle) => {
-					if (data.message === "Unauthenticated.") {
-						console.log("Token is invalid. Redirecting to login page.")
-						signOut();
-						return;
-					}
-					setVehicle(data);
-					setLoading(false);
-				})
-		})()
+		setVehicle(route.params.vehicle);
+		setLoading(false);
 	}, [])
 
 	console.log(vehicle)
@@ -85,7 +84,29 @@ export default function History({ navigation, route }: Props): JSX.Element {
 				? <ActivityIndicator size="large" color={Colors.Secondary} />
 				: <>
 					<ScrollView>
-						<Text style={styles.void}>Coming soon...</Text>
+						<Text style={styles.title}>Détails du véhicule</Text>
+						<View style={styles.details}>
+							<View style={styles.column}>
+								<Text style={[styles.text]}>Marque du véhicule  :</Text>
+								<Text style={[styles.text]}>Modèle du véhicule  :</Text>
+								<Text style={[styles.text]}>Couleur du véhicule :</Text>
+							</View>
+							<View style={styles.column}>
+								<Text style={[styles.text]}>{vehicle?.model?.brand}</Text>
+								<Text style={[styles.text]}>{vehicle?.model?.label}</Text>
+								<Text style={[styles.text]}>{vehicle?.color}</Text>
+							</View>
+						</View>
+						<Text style={styles.title}>Expertises réalisées</Text>
+						{
+							!vehicle?.missions || vehicle?.missions?.length === 0
+								? <Text style={styles.void}>Aucune expertise n'a été réalisée.</Text>
+								: <> 
+									{vehicle.missions.map((mission) => {
+										return <Mission navigation={navigation} mission={mission} />
+									})}
+								</>
+						}
 					</ScrollView>
 					<Arrow direction={Directions.Left} onPress={() => { navigation.goBack() }} />
 				</>

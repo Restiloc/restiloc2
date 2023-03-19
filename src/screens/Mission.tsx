@@ -139,7 +139,8 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 
 	function toHistory() {
 		navigation.navigate("history", {
-			endpoint: mission?.vehicle.route
+			endpoint: mission?.vehicle.route,
+			vehicle: mission?.vehicle
 		});
 	}
 
