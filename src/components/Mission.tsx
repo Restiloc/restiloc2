@@ -1,24 +1,12 @@
 import { Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import Colors from 'src/Colors';
+import { MissionType } from 'src/Types';
 
 const { width } = Dimensions.get("window");
 
 export type Props = {
-	navigation: any,
-	mission: {
-		id: number;
-		dateMission: string;
-		startedAt?: string;
-		kilometersCounter: number;
-		nameExpertFile: string;
-		isFinished: boolean;
-		route: string;
-		vehicle: [];
-		expert: [];
-		garage: [];
-		unavailability: [];
-		pree: [];
-	}
+	navigation: any;
+	mission: MissionType;
 }
 
 /**
@@ -39,7 +27,7 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			backgroundColor: Colors.Mission,
 			height: 100,
 			width: width - 40,
-			borderColor: Colors.Details,
+			borderColor: mission.isFinished ? Colors.Success : Colors.Details,
 			borderWidth: 1,
 			flex: 1,
 			flexDirection: "row",
@@ -47,6 +35,22 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			justifyContent: "space-evenly",
 		}
 	})
+
+	function getCoordinates() {
+		if (mission?.garage?.latitude && mission?.garage?.longitude) {
+			return {
+				latitude: parseFloat(mission.garage.latitude),
+				longitude: parseFloat(mission.garage.longitude),
+				title: mission.garage.name,
+			}
+		} else if (mission?.client?.latitude && mission?.client?.longitude) {
+			return {
+				latitude: parseFloat(mission.client.latitude),
+				longitude: parseFloat(mission.client.longitude),
+				title: `${mission.client.firstName} ${mission.client.lastName}`,
+			}
+		}
+	}
 
 	/**
 	 * Redirects to the corresponding mission page.
@@ -57,7 +61,8 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 		navigation.navigate("mission", {
 			id: mission.id,
 			route: mission.route, 
-			mission: mission 
+			mission: mission,
+			coordinates: getCoordinates()
 		});
 	}
 
@@ -66,14 +71,18 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 	 * From "2021-05-01 12:00:00" to "01/05/2021 12h00" for example.
 	 */
 	const format = {
-		date: (mission.dateMission ?? "").split("-").reverse().join("/"),
-		time: (mission.startedAt ?? "").split(":").slice(0, 2).join("h")
+		hourly: () => {
+			let date = (mission?.dateMission ?? "").split("-").reverse().join("/"),
+			time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
+			if (!date || !time) return "Date inconnue";
+			return `le ${date} à ${time}`
+		}
 	}
 
 	return (
 		<TouchableOpacity onPress={toMission} style={styles.card}>
 			<Text style={styles.color}>Mission #{mission.id}</Text>
-			<Text style={styles.color}>le {format.date} à {format.time}</Text>
+			<Text style={styles.color}>{format.hourly()}</Text>
 		</TouchableOpacity>
 	)
 }
