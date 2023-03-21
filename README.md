@@ -44,6 +44,10 @@ This project is the same as the [Restiloc app](https://github.com/Restiloc/resti
 
 To setup the project you need to follow the documentation of [React Native](https://reactnative-dev.translate.goog/docs/environment-setup?_x_tr_sl=en&_x_tr_tl=fr&_x_tr_hl=fr&_x_tr_pto=sc).
 
+After configuring the app and running it on your smartphone, you will need to configure your Google Map API KEY in the following file :
+
+- `android/src/main/res/values/secrets.xml`
+
 ## :wave: Contributors
 
 * **Alexis Henry** _alias_ [@AlxisHenry](https://github.com/AlxisHenry)
