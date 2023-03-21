@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput, ActivityIndicator } from "react-native";
+import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput, ActivityIndicator, Alert } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "./../../App";
 import type { Expert, ExpertUpdate } from "../Types";
@@ -6,8 +6,6 @@ import Navbar from "src/components/Navbar";
 import Storage from "src/Storage";
 import Colors from "../Colors";
 import Header from "src/components/Header";
-import Button from "src/components/Button";
-import Setting from "src/components/SoftButton";
 import SoftButton from "src/components/SoftButton";
 
 const { height } = Dimensions.get("window");
@@ -113,8 +111,47 @@ export default function Settings({ navigation }: Props): JSX.Element {
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
 
+	const confirmSignOut = () => 
+		Alert.alert(
+			"Sign out",
+			"Are you sure you want to sign out?",
+			[
+				{
+					text: "Cancel",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel"
+				},
+				{
+					text: "Sign out",
+					onPress: () => signOut(),
+					style: "destructive"
+				}
+			],
+			{ cancelable: false }
+		);
+
+	const confirmUpdate = () =>
+		Alert.alert(
+			"Update account",
+			"Are you sure you want to update your account?",
+			[
+				{
+					text: "Cancel",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel"
+				},
+				{
+					text: "Update",
+					onPress: () => updateExpert(),
+					style: "destructive"
+				}
+			],
+			{ cancelable: false }
+		);
+
 	async function updateExpert() {
 		init();
+		console.log(accountDetails)
 		if (Object.keys(accountDetails).length === 0) {
 			console.log("No details to update");
 			setNoDetails(true);
@@ -144,6 +181,10 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			}).catch(() => {
 				setServerError(true);
 			})
+			for (let key in accountDetails) {
+				// @ts-ignore
+				delete accountDetails[key];
+			}
 	}
 
 	function init() {
@@ -224,8 +265,8 @@ export default function Settings({ navigation }: Props): JSX.Element {
 									defaultValue={expert.phoneNumber}
 									onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
 								/>
-								<SoftButton title="Sauvegarder" onPress={updateExpert} />
-								<SoftButton title="Se déconnecter" onPress={signOut} css={{ marginBottom: 20 }} />
+								<SoftButton title="Sauvegarder" onPress={confirmUpdate} />
+								<SoftButton title="Se déconnecter" onPress={confirmSignOut} css={{ marginBottom: 20 }} />
 							</View>
 						</>
 					)}

@@ -61,8 +61,8 @@ export type Garage = {
 	postalCode: string,
 	city: string,
 	phoneNumber: string,
-	latitude: number,
-	longitude: number,
+	latitude: string,
+	longitude: string,
 	url: string,
 }
 
@@ -76,8 +76,8 @@ export type Client = {
 	street: string,
 	postalCode: string,
 	city: string,
-	latitude: number,
-	longitude: number,
+	latitude: string,
+	longitude: string,
 	url: string,
 	mission?: MissionType,
 }

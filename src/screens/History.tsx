@@ -1,10 +1,9 @@
 import { Dimensions, View, ScrollView, StyleSheet, Text, ActivityIndicator } from "react-native";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
-import Arrow, { Directions } from "src/components/Arrow";
+import Arrow, { Directions, Positions } from "src/components/Arrow";
 import { Vehicle } from "src/Types";
 import { useEffect, useState, useContext } from "react";
-import Storage from "src/Storage";
 import { AuthContext } from "../../App";
 import Mission from "src/components/Mission";
 
@@ -67,6 +66,12 @@ export default function History({ navigation, route }: Props): JSX.Element {
 			fontWeight: "bold",
 			marginLeft: 20,
 			marginTop: 20,
+		},
+		container: {
+			marginTop: 30,
+			flex: 1,
+			flexDirection: "column",
+			alignItems: "center",
 		}
 	});
 
@@ -74,8 +79,6 @@ export default function History({ navigation, route }: Props): JSX.Element {
 		setVehicle(route.params.vehicle);
 		setLoading(false);
 	}, [])
-
-	console.log(vehicle)
 
 	return (
 		<View style={styles.view}>
@@ -99,16 +102,16 @@ export default function History({ navigation, route }: Props): JSX.Element {
 						</View>
 						<Text style={styles.title}>Expertises réalisées</Text>
 						{
-							!vehicle?.missions || vehicle?.missions?.length === 0
-								? <Text style={styles.void}>Aucune expertise n'a été réalisée.</Text>
-								: <> 
-									{vehicle.missions.map((mission) => {
+							vehicle?.missions && vehicle?.missions?.length > 0
+								? <View style={styles.container}>
+									{vehicle?.missions.map((mission) => {
 										return <Mission navigation={navigation} mission={mission} />
 									})}
-								</>
+								</View>
+								: <Text style={styles.void}>Aucune expertise n'a été réalisée.</Text>
 						}
 					</ScrollView>
-					<Arrow direction={Directions.Left} onPress={() => { navigation.goBack() }} />
+					<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => { navigation.goBack() }} />
 				</>
 			}
 		</View>

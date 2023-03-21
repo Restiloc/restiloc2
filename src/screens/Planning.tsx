@@ -7,12 +7,13 @@ import Navbar from "src/components/Navbar";
 import Header from "src/components/Header";
 import { AuthContext } from "../../App";
 import type { MissionType } from "../Types";
+import Popup, { PopupType } from "src/components/Popup";
 
 const { height } = Dimensions.get("window");
 
 type Props = {
 	navigation: any;
-}
+}	
 
 /**
 * This is the login page of the app.
@@ -47,6 +48,7 @@ export default function Planning({ navigation }: Props): JSX.Element {
 	const [todayMissionsLoading, setTodayMissionsLoading] = useState<boolean>(true);
 	const [missionsFetchFailed, setMissionsFetchFailed] = useState<boolean>(false);
 	const [todayMissionsFetchFailed, setTodayMissionsFetchFailed] = useState<boolean>(false);
+	const [showPopup, setShowPopup] = useState<boolean>(false);
 	const [token, setToken] = useState("");
 	const [missions, setMissions] = useState([]);
 	const [todayMissions, setTodayMissions] = useState([]);
@@ -54,8 +56,19 @@ export default function Planning({ navigation }: Props): JSX.Element {
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
 
+	const finishedMissions = (missions: any[]) => {
+		return missions.filter((mission: MissionType) => mission.isFinished);
+	}
+
 	useEffect(() => {
 		(async () => {
+			let fromLoginScreen = await Storage.get("fromLoginScreen");
+			if (fromLoginScreen) {
+				console.log("Expert coming from login screen, show login success message.");
+				setShowPopup(true);
+				await Storage.remove("fromLoginScreen");
+				setTimeout(() => { setShowPopup(false); }, 5000);
+			}
 			let token = await Storage.get("token");
 			setToken(token?.toString() ?? "");
 			console.log("Token in storage: " + token);
@@ -120,7 +133,8 @@ export default function Planning({ navigation }: Props): JSX.Element {
 
 	return (
 		<View style={styles.view}>
-			<Header />
+			<Header /> 
+			{ showPopup ? <Popup type={PopupType.Success} title="Bienvenue sur Restiloc !" /> : <></> }
 			{
 				<ScrollView style={styles.mission}>
 					<Text style={styles.title}>Missions du jour</Text>
@@ -130,7 +144,7 @@ export default function Planning({ navigation }: Props): JSX.Element {
 							: missionsLoading
 								? <ActivityIndicator size="large" color={Colors.Secondary} />
 								: todayMissions.length === 0
-									? <Text style={styles.p}>Aucune mission pour aujourd'hui !</Text>
+									? <Text style={styles.p}>Aucune mission pour aujourd'hui.</Text>
 									: todayMissions!.map((mission: MissionType) => {
 										return (
 											<Mission mission={mission} key={mission.id} navigation={navigation} />
@@ -144,8 +158,22 @@ export default function Planning({ navigation }: Props): JSX.Element {
 							: todayMissionsLoading
 								? <ActivityIndicator size="large" color={Colors.Secondary} />
 								: missions.length === 0
-									? <Text style={styles.p}>Aucune mission à venir !</Text>
+									? <Text style={styles.p}>Aucune mission à venir.</Text>
 									: missions!.map((mission: MissionType) => {
+										return (
+											<Mission mission={mission} key={mission.id} navigation={navigation} />
+										)
+									})
+					}
+					<Text style={styles.title}>Missions terminées</Text>
+					{
+						missionsFetchFailed
+							? <Text style={styles.p}>Une erreur est survenue lors du chargement des missions.</Text>
+							: missionsLoading
+								? <ActivityIndicator size="large" color={Colors.Secondary} />
+								: finishedMissions(missions).length === 0
+									? <Text style={styles.p}>Aucune mission terminée.</Text>
+									: finishedMissions(missions)!.map((mission: MissionType) => {
 										return (
 											<Mission mission={mission} key={mission.id} navigation={navigation} />
 										)

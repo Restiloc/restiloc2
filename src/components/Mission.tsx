@@ -27,7 +27,7 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			backgroundColor: Colors.Mission,
 			height: 100,
 			width: width - 40,
-			borderColor: Colors.Details,
+			borderColor: mission.isFinished ? Colors.Success : Colors.Details,
 			borderWidth: 1,
 			flex: 1,
 			flexDirection: "row",
@@ -35,6 +35,22 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			justifyContent: "space-evenly",
 		}
 	})
+
+	function getCoordinates() {
+		if (mission?.garage?.latitude && mission?.garage?.longitude) {
+			return {
+				latitude: parseFloat(mission.garage.latitude),
+				longitude: parseFloat(mission.garage.longitude),
+				title: mission.garage.name,
+			}
+		} else if (mission?.client?.latitude && mission?.client?.longitude) {
+			return {
+				latitude: parseFloat(mission.client.latitude),
+				longitude: parseFloat(mission.client.longitude),
+				title: `${mission.client.firstName} ${mission.client.lastName}`,
+			}
+		}
+	}
 
 	/**
 	 * Redirects to the corresponding mission page.
@@ -45,7 +61,8 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 		navigation.navigate("mission", {
 			id: mission.id,
 			route: mission.route, 
-			mission: mission 
+			mission: mission,
+			coordinates: getCoordinates()
 		});
 	}
 

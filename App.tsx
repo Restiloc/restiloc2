@@ -8,13 +8,16 @@ import { useReducer } from 'react';
 import Landing from 'screens/Landing';
 import Login from 'screens/Login';
 import Storage from 'src/Storage';
-import Navbar from 'src/components/Navbar';
 import Mission from 'src/screens/Mission';
 import Planning from 'src/screens/Planning';
 import Settings from 'src/screens/Settings';
 import Statistics from 'src/screens/Statistics';
 import type { Expert } from 'src/Types';
 import History from 'src/screens/History';
+import Unavailable from 'src/screens/Unavailable';
+import {enableLatestRenderer} from 'react-native-maps';
+
+enableLatestRenderer();
 
 type credentials = {
   identifier: string,
@@ -109,6 +112,7 @@ function App(): JSX.Element {
           return false;
         }
         
+        await Storage.set("fromLoginScreen", JSON.stringify(true));
         await Storage.set("token", response.token);
 
         dispatch({ type: 'SIGN_IN', isSignedIn: true });
@@ -140,6 +144,8 @@ function App(): JSX.Element {
             <Stack.Screen name="settings" component={ Settings } options={{ headerShown: false, animation:'none' }} />
             {/* @ts-ignore */}
             <Stack.Screen name="history" component={ History } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            {/* @ts-ignore */}
+            <Stack.Screen name="unavailable" component={ Unavailable } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
           </>
         )}
         </Stack.Navigator>

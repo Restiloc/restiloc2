@@ -4,12 +4,13 @@ import { useEffect, useState, useContext } from "react";
 import Header from "src/components/Header";
 import { AuthContext } from "../../App";
 import type { Client, Garage, MissionType } from "../Types";
-import Arrow, { Directions } from "src/components/Arrow";
+import Arrow, { Directions, Positions } from "src/components/Arrow";
 import Colors from "src/Colors";
 import Button from "src/components/Button";
 import SoftButton from "src/components/SoftButton";
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 
-const { height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 type Props = {
 	navigation: any;
@@ -18,6 +19,11 @@ type Props = {
 			id: string;
 			route: string;
 			mission: MissionType;
+			coordinates: {
+				latitude: number;
+				longitude: number;
+				title: string;
+			};
 		}
 	};
 }
@@ -48,7 +54,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 			gap: 10,
 		},
 		address: {
-			fontSize: 18,
+			fontSize: 17,
 			color: Colors.Details,
 			fontWeight: "bold",
 			textAlign: "center",
@@ -58,18 +64,8 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 			color: Colors.Details,
 		},
 		container: {
-			marginLeft: 20,
-			marginRight: 20,
 			marginTop: 10,
-			textAlign: "center",
-			alignContent: "center",
-			flex: 1,
-			justifyContent: "center",
 			alignItems: "center",
-		},
-		map: {
-			width: "100%",
-			height: 250,
 		},
 		card: {
 			color: "black",
@@ -83,6 +79,19 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 			flexDirection: "row",
 			alignItems: "center",
 			justifyContent: "space-evenly",
+		},
+		map: {
+			position: 'relative',
+			marginTop: 50,
+			alignSelf: 'center',
+			height: 400,
+			width: width - 40,
+			marginBottom: 50,
+		},
+		mapView: {
+			height: 400,
+			width: width - 40,
+			...StyleSheet.absoluteFillObject,
 		}
 	});
 
@@ -90,6 +99,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 	const [isClient, setIsClient] = useState(false);
 	const [mission, setMission] = useState<MissionType>();
 	const endpoint = route.params.route;
+	const coordinates = route.params.coordinates;
 
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
@@ -117,7 +127,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 						return;
 					}
 					setMission(data);
-					if (data.client !== null) setIsClient(true);
+					if (data.client !== null) setIsClient(true)
 					setLoading(false);
 				})
 		})()
@@ -131,9 +141,14 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 		},
 		hourly: () => {
 			let date = (mission?.dateMission ?? "").split("-").reverse().join("/"),
-			time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
+				time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
 			if (!date || !time) return "Date inconnue";
 			return `le ${date} à ${time}`
+		},
+		marker: () => {
+			let type: Garage | Client | undefined = isClient ? mission?.client : mission?.garage;
+			if (type === undefined) return "Adresse inconnue";
+			return `${type?.addressNumber} ${type?.street}, ${type?.postalCode} ${type?.city}`
 		}
 	}
 
@@ -144,7 +159,13 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 		});
 	}
 
-	console.log(mission?.vehicle);
+	function toUnavailable() {
+		navigation.navigate("unavailable", {
+			endpoint: mission?.route,
+			mission: mission
+		});
+	}
+
 	return (
 		<View style={styles.view}>
 			<Header />
@@ -177,12 +198,30 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 								<Text style={[styles.text]}>{mission?.kilometersCounter}</Text>
 							</View>
 						</View>
-						{/* Google map API */}
-						<View style={styles.map}></View>
-						<SoftButton title="Véhicule indisponible" onPress={() => { navigation.navigate("unavailable") }} />
+						<View style={styles.map}>
+							{
+								loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
+									<MapView
+										style={styles.mapView}
+										provider={PROVIDER_GOOGLE}
+										region={{
+											latitude: coordinates.latitude,
+											longitude: coordinates.longitude,
+											latitudeDelta: 0.0922,
+											longitudeDelta: 0.0421,
+										}} >
+										<Marker
+											coordinate={{ latitude: coordinates.latitude, longitude: coordinates.longitude }}
+											title={ coordinates.title }
+											description="" />
+									</MapView>
+								)
+							}
+						</View>
+						<SoftButton title="Véhicule indisponible" onPress={toUnavailable} />
 						<SoftButton title="Historique du véhicule" onPress={toHistory} />
 					</ScrollView>
-					<Arrow direction={Directions.Left} onPress={() => { navigation.goBack() }} />
+					<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => { navigation.goBack() }} />
 				</>
 			)}
 		</View>

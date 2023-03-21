@@ -6,8 +6,14 @@ export enum Directions {
 	Right = "R"
 }
 
+export enum Positions {
+	Left = "L",
+	Right = "R",
+}
+
 type Props = {
 	direction: Directions,
+	position: Positions,
 	onPress: () => void,
 	css?: {}
 }
@@ -19,21 +25,19 @@ type Props = {
  * @param onPress - The onPress event of the arrow.
  * @returns {JSX.Element} Rendered button.
  */
-export default function Arrow({ direction, onPress, css }: Props): JSX.Element {
+export default function Arrow({ direction, position, onPress, css }: Props): JSX.Element {
 
 	const styles = StyleSheet.create({
 		container: {
 			marginTop: 15,
-			alignSelf: "flex-end",
 			borderRadius: 10,
-			marginBottom: 15,
-			marginRight: 15,
+			marginBottom: 10,
+			alignSelf: position === Positions.Right ? "flex-end" : "flex-start",
 			...css
 		},
 		image: {
 			resizeMode: "contain",
-			aspectRatio: 1,
-			alignSelf: "flex-end",
+			aspectRatio: 1
 		}
 	})
 	
@@ -44,7 +48,15 @@ export default function Arrow({ direction, onPress, css }: Props): JSX.Element {
 			// @ts-ignore
 			transform: [{ rotate: "180deg" }]
 		}
-	} 
+	} else if (position === Positions.Left) {
+		styles.container = {
+			...styles.container,
+			// @ts-ignore
+			marginLeft: 10,
+			// @ts-ignore
+			alignSelf: "flex-start"
+		}
+	}
 
 	return (
 		<TouchableOpacity style={styles.container} onPress={onPress}>
