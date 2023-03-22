@@ -14,7 +14,7 @@ export type MissionType = {
 	expert: Expert;
 	garage?: Garage;
 	client?: Client;
-	unavailability?: [];
+	unavailability?: Unavailability;
 	pree: [];
 }
 
@@ -87,4 +87,23 @@ export type ExpertUpdate = {
 	lastName: string,
 	email: string,
 	phoneNumber: number|string,
+}
+
+export type Credentials = {
+  identifier: string,
+  password: string,
+}
+
+export type ReasonType = {
+	id: number,
+	label: string,
+	route: string,
+	unavailabilities: [],
+}
+
+export type Unavailability = {
+	customerResponsible: boolean,
+	id: number,
+	route: string,
+	reason: ReasonType,
 }

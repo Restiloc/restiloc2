@@ -16,22 +16,6 @@ type Props = {
  * @returns {JSX.Element} Rendered statistics page.
  */
 export default function Statistics({ navigation }: Props): JSX.Element {
-
-	const styles = StyleSheet.create({
-		view: {
-			height: height,
-			backgroundColor: Colors.Primary
-		},
-		void: {
-			height: height - 350,
-			textAlign: "center",
-			textAlignVertical: "center",
-			color: Colors.Secondary,
-			fontSize: 30,
-			fontWeight: "bold",
-		}
-	});
-	
 	return (
 		<View style={styles.view}>
 			<Header />
@@ -42,3 +26,18 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	view: {
+		height: height,
+		backgroundColor: Colors.Primary
+	},
+	void: {
+		height: height - 350,
+		textAlign: "center",
+		textAlignVertical: "center",
+		color: Colors.Secondary,
+		fontSize: 30,
+		fontWeight: "bold",
+	}
+});

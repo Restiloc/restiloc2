@@ -3,8 +3,7 @@ import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
 import { Vehicle } from "src/Types";
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../App";
+import { useEffect, useState } from "react";
 import Mission from "src/components/Mission";
 
 const { height } = Dimensions.get("window");
@@ -20,60 +19,16 @@ type Props = {
 }
 
 /**
- * This the history of a vehicle.
+ * This the history of missions realized on a vehicle.
  * 
  * @param navigation - The navigation of the app.
+ * @param route - The route of the app with needed parameters.
  * @returns {JSX.Element} Rendered statistics page.
  */
 export default function History({ navigation, route }: Props): JSX.Element {
 
-	const { endpoint } = route.params;
 	const [vehicle, setVehicle] = useState<Vehicle>();
 	const [loading, setLoading] = useState(true);
-	// @ts-ignore
-	const { signOut } = useContext(AuthContext);
-
-	const styles = StyleSheet.create({
-		view: {
-			height: height,
-			backgroundColor: Colors.Primary
-		},
-		void: {
-			fontSize: 16,
-			color: "black",
-			marginLeft: 20,
-			marginTop: 20,
-		},
-		details: {
-			marginLeft: 20,
-			marginRight: 20,
-			marginTop: 30,
-			flexDirection: "row",
-		},
-		column: {
-			flex: 1,
-			flexDirection: "column",
-			alignItems: "center",
-			gap: 10,
-		},
-		text: {
-			fontSize: 16,
-			color: Colors.Details,
-		},
-		title: {
-			fontSize: 28,
-			color: Colors.Details,
-			fontWeight: "bold",
-			marginLeft: 20,
-			marginTop: 20,
-		},
-		container: {
-			marginTop: 30,
-			flex: 1,
-			flexDirection: "column",
-			alignItems: "center",
-		}
-	});
 
 	useEffect(() => {
 		setVehicle(route.params.vehicle);
@@ -117,3 +72,45 @@ export default function History({ navigation, route }: Props): JSX.Element {
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	view: {
+		height: height,
+		backgroundColor: Colors.Primary
+	},
+	void: {
+		fontSize: 16,
+		color: "black",
+		marginLeft: 20,
+		marginTop: 20,
+	},
+	details: {
+		marginLeft: 20,
+		marginRight: 20,
+		marginTop: 30,
+		flexDirection: "row",
+	},
+	column: {
+		flex: 1,
+		flexDirection: "column",
+		alignItems: "center",
+		gap: 10,
+	},
+	text: {
+		fontSize: 16,
+		color: Colors.Details,
+	},
+	title: {
+		fontSize: 28,
+		color: Colors.Details,
+		fontWeight: "bold",
+		marginLeft: 20,
+		marginTop: 20,
+	},
+	container: {
+		marginTop: 30,
+		flex: 1,
+		flexDirection: "column",
+		alignItems: "center",
+	}
+});

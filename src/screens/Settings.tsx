@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput, ActivityIndicator, Alert } from "react-native";
-import { useEffect, useState, useContext } from "react";
+import { Dimensions, StyleSheet, View, ScrollView, Text, TextInput, ActivityIndicator, Alert, RefreshControl } from "react-native";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { AuthContext } from "./../../App";
 import type { Expert, ExpertUpdate } from "../Types";
 import Navbar from "src/components/Navbar";
@@ -7,6 +7,7 @@ import Storage from "src/Storage";
 import Colors from "../Colors";
 import Header from "src/components/Header";
 import SoftButton from "src/components/SoftButton";
+import { me } from "src/services/api/Auth";
 
 const { height } = Dimensions.get("window");
 
@@ -22,83 +23,6 @@ type Props = {
  */
 export default function Settings({ navigation }: Props): JSX.Element {
 
-	const styles = StyleSheet.create({
-		view: {
-			height: height,
-			backgroundColor: Colors.Primary,
-		},
-		settings: {
-			marginLeft: 20,
-			marginRight: 20,
-		},
-		expert: {
-			marginTop: 20,
-			fontSize: 40,
-			fontWeight: "bold",
-			color: "black"
-		},
-		email: {
-			fontSize: 20,
-			color: "black"
-		},
-		title: {
-			fontSize: 30,
-			fontWeight: "bold",
-			color: "black"
-		},
-		account: {
-			marginTop: 40,
-		},
-		text: {
-			fontSize: 20,
-			color: "black"
-		},
-		logout: {
-			marginTop: 20,
-			flex: 1,
-		},
-		error: {
-			color: "black",
-			backgroundColor: Colors.Error,
-			padding: 10,
-			width: "100%",
-			height: 50,
-			textAlign: "center",
-			marginBottom: 20,
-			borderRadius: 10,
-			textAlignVertical: "center",
-		},
-		success: {
-			color: "black",
-			backgroundColor: Colors.Success,
-			padding: 10,
-			width: "100%",
-			height: 50,
-			textAlign: "center",
-			marginBottom: 20,
-			borderRadius: 10,
-			textAlignVertical: "center",
-		},
-		container: {
-			marginTop: 20,
-			flex: 1,
-			flexDirection: "column",
-			gap: 5,
-		},
-		input: {
-			borderWidth: 1,
-			minWidth: 250,
-			borderRadius: 10,
-			color: "black",
-			padding: 10,
-		},
-		label: {
-			color: "black",
-			fontSize: 16,
-			alignSelf: "flex-start",
-		}
-	});
-
 	const [update, setUpdate] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [expert, setExpert] = useState<Expert>({} as Expert);
@@ -107,9 +31,17 @@ export default function Settings({ navigation }: Props): JSX.Element {
 	const [updateSuccess, setUpdateSuccess] = useState<boolean>(false);
 	const [noDetails, setNoDetails] = useState<boolean>(false);
 	const [accountDetails, setAccountDetails] = useState({} as ExpertUpdate);
+	const [refreshing, setRefreshing] = useState(false);
 
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
+
+	const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 250);
+  }, []);
 
 	const confirmSignOut = () => 
 		Alert.alert(
@@ -157,7 +89,7 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			setNoDetails(true);
 			return;
 		};
-		console.log("Edited details: " + accountDetails);
+		console.log("Edited details: ", accountDetails);
 		if (accountDetails.phoneNumber && typeof accountDetails.phoneNumber === "string") {
 			accountDetails.phoneNumber = parseInt(accountDetails.phoneNumber);
 		}
@@ -196,24 +128,10 @@ export default function Settings({ navigation }: Props): JSX.Element {
 
 	useEffect(() => {
 		(async () => {
-			let token = await Storage.get("token");
-			fetch("https://restiloc.space/api/me", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json",
-					"Authorization": `Bearer ${token}`
-				}
-			}).then((response) => response.json())
-				.then((data: Expert) => {
-					if (data.message === "Unauthenticated.") {
-						console.error("Invalid token...");
-						signOut();
-						return;
-					}
-					setExpert(data);
-					setLoading(false);
-				})
+			const response = await me();
+			if (!response) signOut();
+			setExpert(response);
+			setLoading(false);
 		})()
 		setUpdate(false);
 	}, [update])
@@ -221,7 +139,9 @@ export default function Settings({ navigation }: Props): JSX.Element {
 	return (
 		<View style={styles.view}>
 			<Header />
-			<ScrollView style={styles.settings}>
+			<ScrollView style={styles.settings} refreshControl={
+				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+			}>
 				<Text style={styles.expert}>{expert.lastName} {expert.firstName}</Text>
 				<Text style={styles.email}>{expert.email}</Text>
 				<View style={styles.account}>
@@ -276,3 +196,80 @@ export default function Settings({ navigation }: Props): JSX.Element {
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	view: {
+		height: height,
+		backgroundColor: Colors.Primary,
+	},
+	settings: {
+		marginLeft: 20,
+		marginRight: 20,
+	},
+	expert: {
+		marginTop: 20,
+		fontSize: 40,
+		fontWeight: "bold",
+		color: "black"
+	},
+	email: {
+		fontSize: 20,
+		color: "black"
+	},
+	title: {
+		fontSize: 30,
+		fontWeight: "bold",
+		color: "black"
+	},
+	account: {
+		marginTop: 40,
+	},
+	text: {
+		fontSize: 20,
+		color: "black"
+	},
+	logout: {
+		marginTop: 20,
+		flex: 1,
+	},
+	error: {
+		color: "black",
+		backgroundColor: Colors.Error,
+		padding: 10,
+		width: "100%",
+		height: 50,
+		textAlign: "center",
+		marginBottom: 20,
+		borderRadius: 10,
+		textAlignVertical: "center",
+	},
+	success: {
+		color: "black",
+		backgroundColor: Colors.Success,
+		padding: 10,
+		width: "100%",
+		height: 50,
+		textAlign: "center",
+		marginBottom: 20,
+		borderRadius: 10,
+		textAlignVertical: "center",
+	},
+	container: {
+		marginTop: 20,
+		flex: 1,
+		flexDirection: "column",
+		gap: 5,
+	},
+	input: {
+		borderWidth: 1,
+		minWidth: 250,
+		borderRadius: 10,
+		color: "black",
+		padding: 10,
+	},
+	label: {
+		color: "black",
+		fontSize: 16,
+		alignSelf: "flex-start",
+	}
+});

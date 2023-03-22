@@ -1,3 +1,6 @@
+/**
+ * This enum contains all the colors used in the app.
+ */
 enum Colors {
 	Primary = '#F2F2F2',
 	Secondary = '#464AA6',

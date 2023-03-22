@@ -17,35 +17,6 @@ type Props = {
  */
 export default function Landing({ navigation }: Props): JSX.Element {
 
-	const styles = StyleSheet.create({
-		container: {
-			height: height,
-			backgroundColor: Colors.Primary,
-		},
-		top: {
-			height: height / 2,
-			flex: 1,
-			justifyContent: "center",
-			backgroundColor: Colors.Primary
-		},
-		bottom: {
-			height: height / 2,
-			backgroundColor: Colors.Secondary,
-			flex: 1,
-			justifyContent: "center",
-			alignItems: "center",
-			gap: 20
-		},
-		title: {
-			fontSize: 32,
-		},
-		subtitle: {
-			fontSize: 12,
-			maxWidth: 300,
-			textAlign: "center",
-		}
-	});
-
 	const toLogin = () => navigation.navigate("login");
 
 	return (
@@ -61,3 +32,32 @@ export default function Landing({ navigation }: Props): JSX.Element {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		height: height,
+		backgroundColor: Colors.Primary,
+	},
+	top: {
+		height: height / 2,
+		flex: 1,
+		justifyContent: "center",
+		backgroundColor: Colors.Primary
+	},
+	bottom: {
+		height: height / 2,
+		backgroundColor: Colors.Secondary,
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		gap: 20
+	},
+	title: {
+		fontSize: 32,
+	},
+	subtitle: {
+		fontSize: 12,
+		maxWidth: 300,
+		textAlign: "center",
+	}
+});

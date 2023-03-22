@@ -20,46 +20,6 @@ type Credentials = {
  */
 export default function Login(): JSX.Element {
 
-	const styles = StyleSheet.create({
-		error: {
-			color: "black",
-			backgroundColor: Colors.Error,
-			padding: 10,
-			marginTop: -20,
-			width: 250,
-			textAlign: "center",
-			marginBottom: 20,
-			borderRadius: 10,
-		},
-		login: {
-			height: height,
-			backgroundColor: Colors.Primary,
-			flex: 1,
-			justifyContent: "center",
-			alignItems: "center",
-			gap: 10,
-		},
-		input: {
-			borderWidth: 1,
-			minWidth: 250,
-			borderRadius: 10,
-			color: "black",
-			padding: 10,
-		},
-		container: {
-			display: "flex",
-			flexDirection: "column",
-			justifyContent: "center",
-			alignItems: "center",
-			gap: 10,
-		},
-		label: {
-			color: "black",
-			fontSize: 16,
-			alignSelf: "flex-start",
-		}
-	});
-
 	const [loginError, setLoginError] = useState(false);
 	const [serverError, setServerError] = useState(false);
 	const [credentials, setCredentials] = useState<Credentials>({ 
@@ -106,3 +66,43 @@ export default function Login(): JSX.Element {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	error: {
+		color: "black",
+		backgroundColor: Colors.Error,
+		padding: 10,
+		marginTop: -20,
+		width: 250,
+		textAlign: "center",
+		marginBottom: 20,
+		borderRadius: 10,
+	},
+	login: {
+		height: height,
+		backgroundColor: Colors.Primary,
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		gap: 10,
+	},
+	input: {
+		borderWidth: 1,
+		minWidth: 250,
+		borderRadius: 10,
+		color: "black",
+		padding: 10,
+	},
+	container: {
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
+		alignItems: "center",
+		gap: 10,
+	},
+	label: {
+		color: "black",
+		fontSize: 16,
+		alignSelf: "flex-start",
+	}
+});
