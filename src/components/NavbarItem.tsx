@@ -1,5 +1,7 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity, GestureResponderEvent } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "src/Colors";
+// @ts-ignore
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
 	title: string,
@@ -30,10 +32,6 @@ export default function NavbarItem({ title, image, active, navigation }: Props):
 			gap: 5,
 		},
 		image: {
-			width: 25,
-			height: 25,
-			aspectRatio: 1,
-			resizeMode: "contain",
 		},
 		text: {},
 		activeTab: {
@@ -45,28 +43,11 @@ export default function NavbarItem({ title, image, active, navigation }: Props):
 		}
 	})
 
-	let source;
-
-	switch (image) {
-		case "planning":
-			source = require("./planning.png");
-			break;
-		case "statistics":
-			source = require("./statistics.png");
-			break;
-		case "settings":
-			source = require("./settings.png");
-			break;
-		default:
-			source = require("./planning.png");
-			break;
-	}
-
 	if (active) {
 		styles.image = {
 			...styles.image,
 			// @ts-ignore
-			tintColor: Colors.Secondary
+			color: Colors.Secondary
 		}
 		styles.text = {
 			...styles.text,
@@ -74,6 +55,19 @@ export default function NavbarItem({ title, image, active, navigation }: Props):
 		}
 	}
 
+	let icon;
+
+	switch (image) {
+		case "statistics":
+			icon = <Icon name="bar-chart" size={25} style={styles.image} />;
+			break;
+		case "settings":
+			icon = <Icon name="settings" size={25} style={styles.image} />;
+			break;
+		default:
+			icon = <Icon name="view-agenda" size={25} style={styles.image} />;
+			break;
+	}
 	/**
 	 * Redirects to the corresponding page.
 	 */
@@ -83,7 +77,7 @@ export default function NavbarItem({ title, image, active, navigation }: Props):
 
 	return (
 		<TouchableOpacity style={ styles.item } onPress={handlePress}>
-			<Image source={ source } style={styles.image}/>
+			{ icon }
 			<Text style={styles.text}>
 				{ title ?? "NavbarItem" }
 			</Text>

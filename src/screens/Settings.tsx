@@ -3,7 +3,7 @@ import { useEffect, useState, useContext, useCallback } from "react";
 import { AuthContext } from "./../../App";
 import type { Expert, ExpertUpdate } from "../Types";
 import Navbar from "src/components/Navbar";
-import Storage from "src/Storage";
+import Storage from "src/services/Storage";
 import Colors from "../Colors";
 import Header from "src/components/Header";
 import SoftButton from "src/components/SoftButton";

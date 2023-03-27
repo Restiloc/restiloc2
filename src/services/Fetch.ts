@@ -1,15 +1,13 @@
-import Storage from "src/Storage";
+import Storage from "src/services/Storage";
 import { __DOMAIN__ } from "src/Constants";
-
-export enum Methods {
-	GET = "GET",
-	POST = "POST",
-	PUT = "PUT",
-	DELETE = "DELETE",
-}
+import { Methods } from "src/Enum";
 
 export default class Fetch {
 
+	/**
+	 * This method is used to call the API
+	 * @example const response = await Fetch.call("/endpoint", Methods.POST, credentials);
+	 */
 	static async call(endpoint: string, method: Methods = Methods.GET, payload: object = {}): Promise<any> {
 
 		console.log(`Calling ${endpoint} with method ${method} and payload: `, payload);

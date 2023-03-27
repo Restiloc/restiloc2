@@ -35,6 +35,9 @@ export type Expert = {
 	username: string,
 }
 
+/**
+ * This is the type of the object returned by the API when we get the information of a vehicle.
+ */
 export type Vehicle = {
 	message?: string,
 	id: number,
@@ -46,6 +49,9 @@ export type Vehicle = {
 	missions: MissionType[],
 }
 
+/**
+ * This is the type of the object returned by the API when we get the information of a model.
+ */
 export type Model = {
 	id: number,
 	label: string,
@@ -53,6 +59,9 @@ export type Model = {
 	route: string,
 }
 
+/**
+ * This is the type of the object returned by the API when we get the information of a garage.
+ */
 export type Garage = {
 	id: number,
 	name: string,
@@ -66,6 +75,9 @@ export type Garage = {
 	url: string,
 }
 
+/**
+ * This is the type of the object returned by the API when we get the information of a client.
+ */
 export type Client = {
 	id: number,
 	firstName: string,
@@ -82,18 +94,9 @@ export type Client = {
 	mission?: MissionType,
 }
 
-export type ExpertUpdate = {
-	firstName: string,
-	lastName: string,
-	email: string,
-	phoneNumber: number|string,
-}
-
-export type Credentials = {
-  identifier: string,
-  password: string,
-}
-
+/**
+ * This is the type of the object returned by the API when we get the information of a reason.
+ */
 export type ReasonType = {
 	id: number,
 	label: string,
@@ -101,9 +104,35 @@ export type ReasonType = {
 	unavailabilities: [],
 }
 
+/**
+ * This is the type of the object returned by the API when we get the information of an unavailability.
+ */
 export type Unavailability = {
 	customerResponsible: boolean,
 	id: number,
 	route: string,
 	reason: ReasonType,
+}
+
+/**
+ * This is the object we use to update the information of an expert.
+ */
+export type ExpertUpdate = {
+	firstName: string,
+	lastName: string,
+	email: string,
+	phoneNumber: number|string,
+}
+
+/**
+ * This is the object we use to login an expert.
+ */
+export type Credentials = {
+  identifier: string,
+  password: string,
+}
+
+export type Stats = {
+	reason: ReasonType,
+	count: number,
 }

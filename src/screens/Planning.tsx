@@ -1,5 +1,5 @@
 import { Dimensions, ScrollView, StyleSheet, View, RefreshControl, Alert } from "react-native";
-import Storage from "src/Storage";
+import Storage from "src/services/Storage";
 import { useEffect, useState, useContext, useCallback } from "react";
 import Navbar from "src/components/Navbar";
 import Header from "src/components/Header";

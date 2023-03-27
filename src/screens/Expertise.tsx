@@ -1,13 +1,9 @@
-import { Dimensions, View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import { Dimensions, View, StyleSheet } from "react-native";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
-import { MissionType, ReasonType } from "src/Types";
+import type { MissionType } from "src/Types";
 import { useEffect, useState } from "react";
-import Storage from "src/Storage";
-import Button from "src/components/Button";
-import DropdownSelect from "react-native-input-select";
-import { getReasons } from "src/services/api/Reasons";
 
 const { height } = Dimensions.get("window");
 

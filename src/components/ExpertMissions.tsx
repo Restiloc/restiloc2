@@ -3,7 +3,7 @@ import Colors from "../Colors";
 import { useEffect, useState } from "react";
 import { MissionType } from "src/Types";
 import Mission from "./Mission";
-import { expertMissions } from "src/services/api/Missions";
+import { getExpertMissions } from "src/services/api/Missions";
 
 type Props = {
 	navigation: any
@@ -17,7 +17,7 @@ export default function ExpertMissions({ navigation }: Props): JSX.Element {
 
 	useEffect(() => {
 		(async () => {
-			let response = await expertMissions();
+			let response = await getExpertMissions();
 			if (!response) {
 				setFetchStatus(false);
 				return;

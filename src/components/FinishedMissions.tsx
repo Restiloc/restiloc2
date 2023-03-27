@@ -3,7 +3,7 @@ import Colors from "../Colors";
 import { useEffect, useState } from "react";
 import { MissionType } from "src/Types";
 import Mission from "./Mission";
-import { finishedMissions } from "src/services/api/Missions";
+import { getFinishedMissions } from "src/services/api/Missions";
 
 type Props = {
 	navigation: any
@@ -17,7 +17,7 @@ export default function FinishedMissions({ navigation }: Props): JSX.Element {
 
 	useEffect(() => {
 		(async () => {
-			let response = await finishedMissions();
+			let response = await getFinishedMissions();
 			if (!response) {
 				setFetchStatus(false);
 				return;

@@ -2,13 +2,12 @@ import { Dimensions, View, StyleSheet, Text, ActivityIndicator } from "react-nat
 import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
-import { MissionType, ReasonType } from "src/Types";
+import type { MissionType, ReasonType } from "src/Types";
 import { useEffect, useState } from "react";
-import Storage from "src/Storage";
 import Button from "src/components/Button";
 import DropdownSelect from "react-native-input-select";
 import { getReasons } from "src/services/api/Reasons";
-import { unavailable } from "src/services/api/Missions";
+import { sendUnavailability } from "src/services/api/Missions";
 
 const { height } = Dimensions.get("window");
 
@@ -52,7 +51,7 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 		}
 		// @ts-ignore
 		console.log(`For missions #${mission.id}, the reason is: ${unavailabilityReason}, corresponding to the reason: ${reasons.find((reason: ReasonType) => reason.id === unavailabilityReason).label}`);
-		const response = await unavailable({
+		const response = await sendUnavailability({
 			// @ts-ignore
 			mission_id: mission.id,
 			// @ts-ignore

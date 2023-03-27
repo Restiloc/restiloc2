@@ -7,7 +7,7 @@ import { useReducer } from 'react';
 
 import Landing from 'screens/Landing';
 import Login from 'screens/Login';
-import Storage from 'src/Storage';
+import Storage from 'src/services/Storage';
 import Mission from 'src/screens/Mission';
 import Planning from 'src/screens/Planning';
 import Settings from 'src/screens/Settings';
@@ -70,7 +70,6 @@ function App(): JSX.Element {
       },
       signOut: async () => {
         await logout();
-        await Storage.remove("token");
         dispatch({ type: 'SIGN_OUT'})
       }
     }),

@@ -1,10 +1,10 @@
 import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import Colors from "../Colors";
-import Storage from "src/Storage";
+import Storage from "src/services/Storage";
 import { useEffect, useState } from "react";
 import { MissionType } from "src/Types";
 import Mission from "./Mission";
-import { todayMissions } from "src/services/api/Missions";
+import { getTodayMissions } from "src/services/api/Missions";
 
 type Props = {
 	navigation: any,
@@ -18,7 +18,7 @@ export default function TodayMissions({ navigation }: Props): JSX.Element {
 
 	useEffect(() => {
 		(async () => {
-			let response = await todayMissions();
+			let response = await getTodayMissions();
 			if (!response) {
 				setFetchStatus(false);
 				return;

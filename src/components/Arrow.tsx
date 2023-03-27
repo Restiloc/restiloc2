@@ -1,5 +1,6 @@
-import { StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import Colors from 'src/Colors'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export enum Directions {
 	Left = "L",
@@ -25,7 +26,7 @@ type Props = {
  * @param onPress - The onPress event of the arrow.
  * @returns {JSX.Element} Rendered button.
  */
-export default function Arrow({ direction, position, onPress, css }: Props): JSX.Element {
+export default function Arrow({ direction = Directions.Left, position = Positions.Left, onPress, css }: Props): JSX.Element {
 
 	const styles = StyleSheet.create({
 		container: {
@@ -36,31 +37,30 @@ export default function Arrow({ direction, position, onPress, css }: Props): JSX
 			...css
 		},
 		image: {
-			resizeMode: "contain",
-			aspectRatio: 1
+			color: Colors.Details
 		}
 	})
 	
-	if (direction === Directions.Right)
+	if (direction === Directions.Left)
 	{
 		styles.image = {
 			...styles.image,
 			// @ts-ignore
-			transform: [{ rotate: "180deg" }]
+			marginLeft: 10,
+			transform: [{ rotate: '180deg' }]
 		}
-	} else if (position === Positions.Left) {
+	} else if (position === Positions.Right) {
 		styles.container = {
 			...styles.container,
 			// @ts-ignore
-			marginLeft: 10,
-			// @ts-ignore
-			alignSelf: "flex-start"
+			marginRight: 10,
+			marginLeft: 10
 		}
 	}
 
 	return (
 		<TouchableOpacity style={styles.container} onPress={onPress}>
-			<Image source={require("./arrow.png")} style={styles.image}/>
+			<Icon name="arrow-right-alt" size={50} style={styles.image} />
 		</TouchableOpacity>
 	);
 }

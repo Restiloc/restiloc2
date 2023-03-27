@@ -1,6 +1,7 @@
-import Storage from "src/Storage";
-import Fetch, { Methods } from "../Fetch";
-import { Credentials, Expert } from "src/Types";
+import Storage from "src/services/Storage";
+import Fetch from "../Fetch";
+import type { Credentials, Expert } from "src/Types";
+import { Methods } from "src/Enum";
 
 export async function authenticated(): Promise<any> {
 	const token = await Storage.get("token");
@@ -19,10 +20,6 @@ export async function authenticated(): Promise<any> {
 	return false;
 }
 
-type Login = {
-
-}
-
 export async function login(credentials: Credentials) {
 	const response = await Fetch.call("/auth/login", Methods.POST, credentials);
 	if (!response.ok) {
@@ -35,7 +32,8 @@ export async function login(credentials: Credentials) {
 }
 
 export async function logout() {
-	Fetch.call("/logout", Methods.POST)
+	Fetch.call("/logout", Methods.POST);
+	await Storage.remove("token");
 }
 
 export async function me() {

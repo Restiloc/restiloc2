@@ -1,35 +1,36 @@
 import { MissionType } from "src/Types";
-import Fetch, { Methods } from "../Fetch";
+import Fetch from "../Fetch";
+import { Methods } from "src/Enum";
 
-export async function todayMissions() {
+export async function getTodayMissions() {
 	const response = await Fetch.call("/me/missions?p=today")
 	if (!response) return false;
 	const data: MissionType[] = await response.json();
 	return data;
 }
 
-export async function expertMissions() {
+export async function getExpertMissions() {
 	const response = await Fetch.call(`/me/missions`)
 	if (!response) return false;
 	const data: MissionType[] = await response.json();
 	return data;
 }
 
-export async function finishedMissions() {
+export async function getFinishedMissions() {
 	const response = await Fetch.call(`/me/missions?p=finished`)
 	if (!response) return false;
 	const data: MissionType[] = await response.json();
 	return data;
 }
 
-export async function mission(endpoint: string) {
+export async function getMission(endpoint: string) {
 	const response = await Fetch.call(`${endpoint}`)
 	if (!response) return false;
 	const data: MissionType = await response.json();
 	return data;
 }
 
-export async function unavailable(body: { reason_id: number, mission_id: number }) {
+export async function sendUnavailability(body: { reason_id: number, mission_id: number }) {
 	const response = await Fetch.call("/unavailabilities", Methods.POST, body)
 	const data = await response.text();
 	if (!response) return false;
