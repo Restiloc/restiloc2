@@ -7,3 +7,15 @@ export async function getStatistics(): Promise<any> {
 	const data: Stats[] = await response.json();
 	return data;
 }
+
+type StatsPeriod = {
+	startDate: string;
+	endDate: string;
+}
+
+export async function getStatisticsByPeriod(dates: StatsPeriod): Promise<any> {
+	const response = await Fetch.call("/stats?startDate=" + dates.startDate + "&endDate=" + dates.endDate);
+	if (!response) return false;
+	const data: Stats[] = await response.json();
+	return data;
+}

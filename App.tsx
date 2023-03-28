@@ -18,6 +18,7 @@ import {enableLatestRenderer} from 'react-native-maps';
 import { authenticated, login, logout } from 'src/services/api/Auth';
 import { Credentials } from 'src/Types';
 import Expertise from 'src/screens/Expertise';
+import PeriodStatistics from 'src/screens/PeriodStatistics';
 
 enableLatestRenderer();
 
@@ -99,6 +100,7 @@ function App(): JSX.Element {
             <Stack.Screen name="unavailable" component={ Unavailable } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
             {/* @ts-ignore */}
             <Stack.Screen name="expertise" component={ Expertise } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            <Stack.Screen name="period" component={ PeriodStatistics } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
           </>
         )}
         </Stack.Navigator>
