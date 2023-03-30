@@ -85,7 +85,8 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 							</>
 						}
 						<SoftButton title="Saisir une période" onPress={() => { setModalVisible(!modalVisible) }} css={{ marginTop: 40 }} />
-						<SoftButton title="Plus de statistiques" onPress={moreStats} />
+						{/* <SoftButton title="Plus de statistiques" onPress={moreStats} /> */}
+						<SoftButton title="Plus de statistiques" onPress={() => { setModalVisible(!modalVisible) }} />
 					</>
 				}
 			</ScrollView>
