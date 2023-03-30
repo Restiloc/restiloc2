@@ -37,13 +37,13 @@ export default function Settings({ navigation }: Props): JSX.Element {
 	const { signOut } = useContext(AuthContext);
 
 	const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 250);
-  }, []);
+		setRefreshing(true);
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 250);
+	}, []);
 
-	const confirmSignOut = () => 
+	const confirmSignOut = () =>
 		Alert.alert(
 			"Sign out",
 			"Are you sure you want to sign out?",
@@ -113,10 +113,10 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			}).catch(() => {
 				setServerError(true);
 			})
-			for (let key in accountDetails) {
-				// @ts-ignore
-				delete accountDetails[key];
-			}
+		for (let key in accountDetails) {
+			// @ts-ignore
+			delete accountDetails[key];
+		}
 	}
 
 	function init() {
@@ -142,55 +142,57 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			<ScrollView style={styles.settings} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>
-				<Text style={styles.expert}>{expert.lastName} {expert.firstName}</Text>
-				<Text style={styles.email}>{expert.email}</Text>
-				<View style={styles.account}>
-					{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
-						<>
-							<Text style={styles.title}>Mes informations</Text>
-							<View style={styles.container}>
-								{noDetails && <Text style={styles.error}>Aucune modification effectuée</Text>}
-								{updateError && <Text style={styles.error}>La modification a échouée...</Text>}
-								{serverError && <Text style={styles.error}>Erreur de traitement...</Text>}
-								{updateSuccess && <Text style={styles.success}>Modification effectuée avec succès !</Text>}
-								<Text style={styles.label}>Nom</Text>
-								<TextInput
-									id="lastname"
-									style={styles.input}
-									placeholderTextColor={"black"}
-									defaultValue={expert.lastName}
-									onChangeText={text => setAccountDetails({ ...accountDetails, lastName: text })}
-								/>
-								<Text style={styles.label}>Prenom</Text>
-								<TextInput
-									id="firstname"
-									style={styles.input}
-									placeholderTextColor={"black"}
-									defaultValue={expert.firstName}
-									onChangeText={text => setAccountDetails({ ...accountDetails, firstName: text })}
-								/>
-								<Text style={styles.label}>Email</Text>
-								<TextInput
-									id="email"
-									style={styles.input}
-									placeholderTextColor={"black"}
-									defaultValue={expert.email}
-									onChangeText={text => setAccountDetails({ ...accountDetails, email: text })}
-								/>
-								<Text style={styles.label}>Téléphone</Text>
-								<TextInput
-									id="telephone"
-									style={styles.input}
-									placeholderTextColor={"black"}
-									defaultValue={expert.phoneNumber}
-									onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
-								/>
-								<SoftButton title="Sauvegarder" onPress={confirmUpdate} />
-								<SoftButton title="Se déconnecter" onPress={confirmSignOut} css={{ marginBottom: 20 }} />
-							</View>
-						</>
-					)}
-				</View>
+				{refreshing ? <></> : <>
+					<Text style={styles.expert}>{expert.lastName} {expert.firstName}</Text>
+					<Text style={styles.email}>{expert.email}</Text>
+					<View style={styles.account}>
+						{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
+							<>
+								<Text style={styles.title}>Mes informations</Text>
+								<View style={styles.container}>
+									{noDetails && <Text style={styles.error}>Aucune modification effectuée</Text>}
+									{updateError && <Text style={styles.error}>La modification a échouée...</Text>}
+									{serverError && <Text style={styles.error}>Erreur de traitement...</Text>}
+									{updateSuccess && <Text style={styles.success}>Modification effectuée avec succès !</Text>}
+									<Text style={styles.label}>Nom</Text>
+									<TextInput
+										id="lastname"
+										style={styles.input}
+										placeholderTextColor={"black"}
+										defaultValue={expert.lastName}
+										onChangeText={text => setAccountDetails({ ...accountDetails, lastName: text })}
+									/>
+									<Text style={styles.label}>Prenom</Text>
+									<TextInput
+										id="firstname"
+										style={styles.input}
+										placeholderTextColor={"black"}
+										defaultValue={expert.firstName}
+										onChangeText={text => setAccountDetails({ ...accountDetails, firstName: text })}
+									/>
+									<Text style={styles.label}>Email</Text>
+									<TextInput
+										id="email"
+										style={styles.input}
+										placeholderTextColor={"black"}
+										defaultValue={expert.email}
+										onChangeText={text => setAccountDetails({ ...accountDetails, email: text })}
+									/>
+									<Text style={styles.label}>Téléphone</Text>
+									<TextInput
+										id="telephone"
+										style={styles.input}
+										placeholderTextColor={"black"}
+										defaultValue={expert.phoneNumber}
+										onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
+									/>
+									<SoftButton title="Sauvegarder" onPress={confirmUpdate} />
+									<SoftButton title="Se déconnecter" onPress={confirmSignOut} css={{ marginBottom: 20 }} />
+								</View>
+							</>
+						)}
+					</View>
+				</>}
 			</ScrollView>
 			<Navbar activeItem="settings" navigation={navigation} />
 		</View>

@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
-import Button from "components/Button";
-import Logo from "components/Logo";
+import Button from "src/components/Button";
+import Logo from "src/components/Logo";
 import Colors from "../Colors";
 
 const { height } = Dimensions.get("window");

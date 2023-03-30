@@ -136,3 +136,10 @@ export type Stats = {
 	reason: ReasonType,
 	count: number,
 }
+
+export type WeeklyStats = {
+	year: number,
+	weeks: {
+		[week: string]: Stats[]
+	}
+}

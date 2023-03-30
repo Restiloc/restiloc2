@@ -1,4 +1,4 @@
-import type { Stats } from "src/Types";
+import type { Stats, WeeklyStats } from "src/Types";
 import Fetch from "../Fetch";
 
 export async function getStatistics(): Promise<any> {
@@ -17,5 +17,12 @@ export async function getStatisticsByPeriod(dates: StatsPeriod): Promise<any> {
 	const response = await Fetch.call("/stats?startDate=" + dates.startDate + "&endDate=" + dates.endDate);
 	if (!response) return false;
 	const data: Stats[] = await response.json();
+	return data;
+}
+
+export async function getWeeklyStatistics(): Promise<any> {
+	const response = await Fetch.call("/stats/weekly");
+	if (!response) return false;
+	const data: WeeklyStats[] = await response.json();
 	return data;
 }

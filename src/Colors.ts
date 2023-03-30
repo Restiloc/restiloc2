@@ -9,6 +9,7 @@ enum Colors {
 	Mission = '#F1F1F1',
 	SettingBackground = '#ebebeb',
 	Success = '#7ee098',
+	CurrentWeek = '#b3e8bc',
 }
 
 export default Colors;

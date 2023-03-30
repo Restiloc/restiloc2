@@ -1,15 +1,15 @@
-import { Dimensions, View, ScrollView, StyleSheet, ActivityIndicator, Text, TextInput } from "react-native";
+import { Dimensions, View, ScrollView, StyleSheet, ActivityIndicator, Text, RefreshControl } from "react-native";
 import Navbar from "src/components/Navbar";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Stats } from "src/Types";
 import { getStatistics } from "src/services/api/Stats";
 import StatsCard from "src/components/StatsCard";
 import SoftButton from "src/components/SoftButton";
 import Modal from "react-native-modal";
-import DatePicker from 'react-native-date-picker'
-import Button from "src/components/Button";
+// import DatePicker from 'react-native-date-picker'
+// import Button from "src/components/Button";
 
 const { height } = Dimensions.get("window");
 
@@ -28,10 +28,11 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 	const [loading, setLoading] = useState(true);
 	const [statistics, setStatistics] = useState<Stats[]>([]);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [openStartDate, setOpenStartDate] = useState(false);
-	const [openEndDate, setOpenEndDate] = useState(false);
-	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
+	const [refreshing, setRefreshing] = useState<boolean>(false);
+	// const [openStartDate, setOpenStartDate] = useState(false);
+	// const [openEndDate, setOpenEndDate] = useState(false);
+	// const [startDate, setStartDate] = useState(new Date());
+	// const [endDate, setEndDate] = useState(new Date());
 
 	useEffect(() => {
 		(async () => {
@@ -41,36 +42,52 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 		})()
 	}, [])
 
-	function showStatsOnPeriod() {
-		setModalVisible(false);
-		navigation.navigate("period", {
-			startDate: startDate.toString(), 
-			endDate: endDate.toString() 
-		});
-	}
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 2000);
+	}, []);
+
+	// function showStatsOnPeriod() {
+	// 	setModalVisible(false);
+	// 	navigation.navigate("period", {
+	// 		startDate: startDate.toString(), 
+	// 		endDate: endDate.toString() 
+	// 	});
+	// }
+
+	const moreStats = () => navigation.navigate("years");
 
 	return (
 		<View style={styles.view}>
 			<Header />
-			<ScrollView style={styles.container}>
-				<Text style={styles.title}>Statistiques</Text>
-				{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> :
-					<>
-						<View style={styles.cards}>
-							{
-								statistics.length > 0 ?
-									statistics.map((stats: Stats, index: number) => {
-										return (
-											<StatsCard key={index} stats={stats} />
-										)
-									})
-									: <Text style={{ color: Colors.Details }}>Aucune statistique disponible.</Text>
-							}
-						</View>
+			<ScrollView style={styles.container} refreshControl={
+				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+			}
+			>
+				{
+					refreshing ? <></> : <>
+						<Text style={styles.title}>Statistiques</Text>
+						{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> :
+							<>
+								<View style={styles.cards}>
+									{
+										statistics.length > 0 ?
+											statistics.map((stats: Stats, index: number) => {
+												return (
+													<StatsCard key={index} stats={stats} />
+												)
+											})
+											: <Text style={{ color: Colors.Details }}>Aucune statistique disponible.</Text>
+									}
+								</View>
+							</>
+						}
+						<SoftButton title="Saisir une période" onPress={() => { setModalVisible(!modalVisible) }} css={{ marginTop: 40 }} />
+						<SoftButton title="Plus de statistiques" onPress={moreStats} />
 					</>
 				}
-				<SoftButton title="Saisir une période" onPress={() => { setModalVisible(!modalVisible) }} css={{ marginTop: 40 }} />
-				<SoftButton title="Plus de statistiques" onPress={() => { }} />
 			</ScrollView>
 			<Modal
 				isVisible={modalVisible}
@@ -78,7 +95,11 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 				onBackdropPress={() => { setModalVisible(!modalVisible) }}
 			>
 				<View style={styles.modal}>
-					<SoftButton title="Date de début" onPress={() => { setOpenStartDate(!openStartDate) }} />
+					<Text style={{ color: "black", fontSize: 30, textAlign: "center", marginBottom: 60, marginTop: 60, fontWeight: "bold" }}>
+						En cours de développement...
+					</Text>
+					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} />
+					{/* <SoftButton title="Date de début" onPress={() => { setOpenStartDate(!openStartDate) }} />
 					<SoftButton title="Date de fin" onPress={() => { setOpenEndDate(!openEndDate) }} />
 					<View style={styles.period}>
 						<Text style={[styles.text, styles.periodTitle]}>
@@ -88,10 +109,10 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 							{startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
 						</Text>
 					</View>
-					<Button title="Voir les statistiques" onPress={showStatsOnPeriod} />
+					<Button title="Voir les statistiques" onPress={showStatsOnPeriod} /> */}
 				</View>
 			</Modal>
-			<DatePicker
+			{/* <DatePicker
 				modal
 				mode="date"
 				title={"Sélectionner une date de début"}
@@ -111,7 +132,7 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 				date={new Date()}
 				onConfirm={(date) => { setEndDate(date) }}
 				onCancel={() => { setOpenEndDate(!openEndDate) }}
-			/>
+			/> */}
 			<Navbar activeItem="statistics" navigation={navigation} />
 		</View>
 	)
