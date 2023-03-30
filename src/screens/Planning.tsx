@@ -31,10 +31,8 @@ export default function Planning({ navigation }: Props): JSX.Element {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const onRefresh = useCallback(() => {
-		setLoading(true);
 		setRefreshing(true);
 		setTimeout(() => {
-			setLoading(false);
 			setRefreshing(false);
 		}, 2000);
 	}, []);
@@ -59,22 +57,17 @@ export default function Planning({ navigation }: Props): JSX.Element {
 		<View style={styles.view}>
 			<Header />
 			{welcome ? <Popup type={PopupType.Success} title="Bienvenue sur Restiloc !" /> : <></>}
-			<ScrollView style={styles.planning} refreshControl={
+			{loading ? <ActivityIndicator size="large" color="#0000ff" /> : <ScrollView style={styles.planning} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>
 				{
-					loading ? 
-					<>
-						{/* <ActivityIndicator size="large" color="#0000ff" /> */}
-					</>
-					:
-					<>
-							<TodayMissions navigation={navigation} />
-							<ExpertMissions navigation={navigation} />
-							<FinishedMissions navigation={navigation} />
+					refreshing ? <></> : <>
+						<TodayMissions navigation={navigation} />
+						<ExpertMissions navigation={navigation} />
+						<FinishedMissions navigation={navigation} />
 					</>
 				}
-			</ScrollView>
+			</ScrollView>}
 			<Navbar activeItem="planning" navigation={navigation} />
 		</View>
 	)

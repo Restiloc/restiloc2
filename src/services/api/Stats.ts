@@ -19,3 +19,10 @@ export async function getStatisticsByPeriod(dates: StatsPeriod): Promise<any> {
 	const data: Stats[] = await response.json();
 	return data;
 }
+
+export async function getWeeklyStatistics(): Promise<any> {
+	const response = await Fetch.call("/stats/weekly");
+	if (!response) return false;
+	const data: WeeklyStats[] = await response.json();
+	return data;
+}

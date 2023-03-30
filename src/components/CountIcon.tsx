@@ -8,13 +8,20 @@ type Props = {
 
 export default function CountIcon({ count }: Props) {
 
-	const properties = {
-		backgroundColor: count > 10 ? "#d8606c" : "#6df2cc",
-		transform: count < 10 ? "90deg" : "-90deg"
-	}
-
-	styles.item.backgroundColor = properties.backgroundColor;
-	styles.icon.transform = [{ rotate: properties.transform }];
+	const styles = StyleSheet.create({
+		item: {
+			width: 25,	
+			height: 25,
+			borderRadius: 25,
+			backgroundColor: count > 10 ? "#d8606c" : "#6df2cc",
+			justifyContent: "center",
+			alignItems: "center",
+			marginTop: 10,
+		},
+		icon: {
+			transform: [{ rotate: (count < 10 ? "90deg" : "-90deg") }]
+		}
+	})
 
 	return (
 		<View style={styles.item}>	
@@ -22,18 +29,3 @@ export default function CountIcon({ count }: Props) {
 		</View>
 	)
 }
-
-const styles = StyleSheet.create({
-	item: {
-		width: 25,	
-		height: 25,
-		borderRadius: 25,
-		backgroundColor: "white",
-		justifyContent: "center",
-		alignItems: "center",
-		marginTop: 10,
-	},
-	icon: {
-		transform: [{ rotate: "0deg" }]
-	}
-})

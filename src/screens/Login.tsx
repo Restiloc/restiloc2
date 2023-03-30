@@ -1,7 +1,7 @@
-import Button from "components/Button";
+import Button from "src/components/Button";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Colors from "../Colors";
-import Logo from "components/Logo";
+import Logo from "src/components/Logo";
 import { useState, useContext } from "react";
 import { AuthContext } from "./../../App";
 

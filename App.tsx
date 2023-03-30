@@ -1,24 +1,28 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {enableLatestRenderer} from 'react-native-maps';
+import React, { useReducer } from 'react';
 
-import React from 'react';
-
-import { useReducer } from 'react';
-
-import Landing from 'screens/Landing';
-import Login from 'screens/Login';
-import Storage from 'src/services/Storage';
+/**
+ * Screens
+ */
+import Landing from 'src/screens/Landing';
+import Login from 'src/screens/Login';
 import Mission from 'src/screens/Mission';
 import Planning from 'src/screens/Planning';
 import Settings from 'src/screens/Settings';
 import Statistics from 'src/screens/Statistics';
 import History from 'src/screens/History';
 import Unavailable from 'src/screens/Unavailable';
-import {enableLatestRenderer} from 'react-native-maps';
-import { authenticated, login, logout } from 'src/services/api/Auth';
-import { Credentials } from 'src/Types';
 import Expertise from 'src/screens/Expertise';
 import PeriodStatistics from 'src/screens/PeriodStatistics';
+import Years from 'src/screens/Years';
+
+/**
+ * Services
+ */
+import { authenticated, login, logout } from 'src/services/api/Auth';
+import { Credentials } from 'src/Types';
 
 enableLatestRenderer();
 
@@ -100,7 +104,9 @@ function App(): JSX.Element {
             <Stack.Screen name="unavailable" component={ Unavailable } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
             {/* @ts-ignore */}
             <Stack.Screen name="expertise" component={ Expertise } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            {/* @ts-ignore */}
             <Stack.Screen name="period" component={ PeriodStatistics } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            <Stack.Screen name="years" component={ Years } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
           </>
         )}
         </Stack.Navigator>

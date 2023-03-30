@@ -32,7 +32,6 @@ export async function getMission(endpoint: string) {
 
 export async function sendUnavailability(body: { reason_id: number, mission_id: number }) {
 	const response = await Fetch.call("/unavailabilities", Methods.POST, body)
-	const data = await response.text();
 	if (!response) return false;
 	return true;
 }
