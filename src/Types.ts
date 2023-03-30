@@ -138,7 +138,8 @@ export type Stats = {
 }
 
 export type WeeklyStats = {
-	years: [
-		year:
-	]
+	year: number,
+	weeks: {
+		[week: string]: Stats[]
+	}
 }

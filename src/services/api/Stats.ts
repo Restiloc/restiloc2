@@ -1,4 +1,4 @@
-import type { Stats } from "src/Types";
+import type { Stats, WeeklyStats } from "src/Types";
 import Fetch from "../Fetch";
 
 export async function getStatistics(): Promise<any> {

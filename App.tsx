@@ -23,6 +23,8 @@ import Years from 'src/screens/Years';
  */
 import { authenticated, login, logout } from 'src/services/api/Auth';
 import { Credentials } from 'src/Types';
+import Weeks from 'src/screens/Weeks';
+import WeekStatistics from 'src/screens/WeekStatistics';
 
 enableLatestRenderer();
 
@@ -107,6 +109,10 @@ function App(): JSX.Element {
             {/* @ts-ignore */}
             <Stack.Screen name="period" component={ PeriodStatistics } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
             <Stack.Screen name="years" component={ Years } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            {/* @ts-ignore */}
+            <Stack.Screen name="weeks" component={ Weeks } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            {/* @ts-ignore */}
+            <Stack.Screen name="week" component={ WeekStatistics } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
           </>
         )}
         </Stack.Navigator>

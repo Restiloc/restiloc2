@@ -34,7 +34,7 @@ export default function PeriodStatistics({ navigation, route }: Props): JSX.Elem
 
 	useEffect(() => {
 		(async () => {
-			let stats = await getStatisticsByPeriod({
+			let stats: Stats[] = await getStatisticsByPeriod({
 				startDate: startDate.toISOString(),
 				endDate: endDate.toISOString()
 			});

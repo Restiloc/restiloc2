@@ -57,7 +57,7 @@ export default function Planning({ navigation }: Props): JSX.Element {
 		<View style={styles.view}>
 			<Header />
 			{welcome ? <Popup type={PopupType.Success} title="Bienvenue sur Restiloc !" /> : <></>}
-			{loading ? <ActivityIndicator size="large" color="#0000ff" /> : <ScrollView style={styles.planning} refreshControl={
+			<ScrollView style={styles.planning} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>
 				{
@@ -67,7 +67,7 @@ export default function Planning({ navigation }: Props): JSX.Element {
 						<FinishedMissions navigation={navigation} />
 					</>
 				}
-			</ScrollView>}
+			</ScrollView>
 			<Navbar activeItem="planning" navigation={navigation} />
 		</View>
 	)
