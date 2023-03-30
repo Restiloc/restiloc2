@@ -1,10 +1,9 @@
+import { useEffect, useState } from "react";
 import { Dimensions, View, ScrollView, StyleSheet, Text, ActivityIndicator } from "react-native";
-import Navbar from "src/components/Navbar";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
-import { useEffect, useState } from "react";
-import type { Stats } from "src/Types";
 import StatsCard from "src/components/StatsCard";
+import type { Stats } from "src/Types";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
 import { getStatisticsByPeriod } from "src/services/api/Stats";
 
@@ -21,7 +20,7 @@ type Props = {
 }
 
 /**
- * This is the statistics page of the app.
+ * This is the statistics page of a selected period.
  * 
  * @param navigation - The navigation of the app.
  * @returns {JSX.Element} Rendered statistics page.

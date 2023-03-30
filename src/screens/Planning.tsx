@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, View, RefreshControl, Alert } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View, RefreshControl, Alert, ActivityIndicator } from "react-native";
 import Storage from "src/services/Storage";
 import { useEffect, useState, useContext, useCallback } from "react";
 import Navbar from "src/components/Navbar";
@@ -28,10 +28,13 @@ export default function Planning({ navigation }: Props): JSX.Element {
 	const { signOut } = useContext(AuthContext);
 	const [welcome, setWelcome] = useState<boolean>(false);
 	const [refreshing, setRefreshing] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const onRefresh = useCallback(() => {
+		setLoading(true);
 		setRefreshing(true);
 		setTimeout(() => {
+			setLoading(false);
 			setRefreshing(false);
 		}, 2000);
 	}, []);
@@ -48,12 +51,9 @@ export default function Planning({ navigation }: Props): JSX.Element {
 				setTimeout(() => { setWelcome(false); }, 5000);
 			}
 			console.log("Expert is authenticated, getting token.");
+			setLoading(false);
 		})()
-		// const focusHanler = navigation.addListener('focus', () => {
-		// 	Alert.alert('Refreshed');
-		// });
-		// return focusHanler;
-	}, [navigation])
+	}, [])
 
 	return (
 		<View style={styles.view}>
@@ -62,9 +62,18 @@ export default function Planning({ navigation }: Props): JSX.Element {
 			<ScrollView style={styles.planning} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>
-				<TodayMissions navigation={navigation} />
-				<ExpertMissions navigation={navigation} />
-				<FinishedMissions navigation={navigation} />
+				{
+					loading ? 
+					<>
+						{/* <ActivityIndicator size="large" color="#0000ff" /> */}
+					</>
+					:
+					<>
+							<TodayMissions navigation={navigation} />
+							<ExpertMissions navigation={navigation} />
+							<FinishedMissions navigation={navigation} />
+					</>
+				}
 			</ScrollView>
 			<Navbar activeItem="planning" navigation={navigation} />
 		</View>
