@@ -143,3 +143,20 @@ export type WeeklyStats = {
 		[week: string]: Stats[]
 	}
 }
+
+export type PrestationType = {
+	id: number,
+	label: string,
+	description: string,
+	image: string,
+	signature: string,
+	route: string,
+	mission: MissionType[],
+}
+
+export type NewPrestationType = {
+	label: string,
+	description: string,
+	image: string,
+	signature: string,
+}

@@ -19,11 +19,11 @@ type Props = {
 			id: string;
 			route: string;
 			mission: MissionType;
-			coordinates: {
-				latitude: number;
-				longitude: number;
-				title: string;
-			};
+			// coordinates: {
+			// 	latitude: number;
+			// 	longitude: number;
+			// 	title: string;
+			// };
 		}
 	};
 }
@@ -67,7 +67,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 			}).then((response) => {
 				if (!response.ok) {
 					setMission(route.params.mission);
-				}²²²
+				}
 				return response.json()
 			})
 				.then((data: MissionType) => {
@@ -99,8 +99,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 
 	function toExpertise() {
 		navigation.navigate("expertise", {
-			endpoint: mission?.vehicle.route,
-			vehicle: mission?.vehicle
+			mission: mission
 		});
 	}
 
@@ -136,9 +135,15 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 						<View style={styles.container}>
 							{
 								mission?.isFinished ? (
-										<View style={styles.finished}>
-											<Text style={styles.finishedTitle}>Mission terminée</Text>
+									mission.unavailability ? (
+										<View style={styles.unavailability}>
+											<Text style={styles.important}>{ mission?.unavailability.reason.label }</Text>
 										</View>
+									) : (
+										<View style={styles.finished}>
+											<Text style={styles.important}>Mission terminée</Text>
+										</View>
+									)
 								) : (
 									<Button title="Expertiser ce véhicule" onPress={toExpertise} />
 								)
@@ -147,10 +152,10 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 						<View style={styles.details}>
 							<View style={styles.column}>
 								<Text style={[styles.text]}>Type de rendez-vous :</Text>
-								<Text style={[styles.text]}>Marque du véhicule  :</Text>
-								<Text style={[styles.text]}>Modèle du véhicule  :</Text>
-								<Text style={[styles.text]}>Couleur du véhicule :</Text>
-								<Text style={[styles.text]}>Kilomètres réalisés :</Text>
+								<Text style={[styles.text]}>Marque du véhicule   :</Text>
+								<Text style={[styles.text]}>Modèle du véhicule   :</Text>
+								<Text style={[styles.text]}>Couleur du véhicule  :</Text>
+								<Text style={[styles.text]}>Kilomètres réalisés   :</Text>
 							</View>
 							<View style={styles.column}>
 								<Text style={[styles.text]}>{isClient ? "Client" : "Garage"}</Text>
@@ -182,12 +187,18 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 						</View> */}
 						{
 							mission?.isFinished ? (
-								<View>
-									
-								</View>
+								<>
+									{
+										!mission.unavailability && mission.pree ? (
+											<SoftButton title="Voir les prestations" onPress={toExpertise} css={{ marginTop: 40, marginBottom: 25 }} />
+										) : (
+											<></>
+										)
+									}
+								</>
 							) : (
 								<>
-									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 40 }} />
+									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 20 }} />
 									{/* <SoftButton title="Historique du véhicule" onPress={toHistory} /> */}
 								</>
 							)
@@ -264,9 +275,16 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.Green,
 		padding: 25,
 	},
-	finishedTitle: {
+	unavailability: {
+		width: "100%",
+		backgroundColor: Colors.Error,
+		padding: 25,
+		marginTop: 20
+	},
+	important: {
 		fontSize: 24,
 		fontWeight: "bold",
+		color: "white",
 		textAlign: "center",
-	}
+	},
 });

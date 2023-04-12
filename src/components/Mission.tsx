@@ -18,7 +18,6 @@ export type Props = {
  */
 export default function Mission({ navigation, mission }: Props): JSX.Element {
 
-	console.log(mission);
 	const styles = StyleSheet.create({
 		color: {
 			color: "black"
@@ -28,7 +27,7 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			backgroundColor: Colors.Mission,
 			height: 100,
 			width: width - 40,
-			borderColor: mission.isFinished ? Colors.Success : Colors.Details,
+			borderColor: mission.isFinished ? ( mission.unavailability ? Colors.Error : Colors.Success ) : Colors.Details,
 			borderWidth: 1,
 			flex: 1,
 			flexDirection: "row",

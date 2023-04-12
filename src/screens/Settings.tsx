@@ -90,9 +90,6 @@ export default function Settings({ navigation }: Props): JSX.Element {
 			return;
 		};
 		console.log("Edited details: ", accountDetails);
-		if (accountDetails.phoneNumber && typeof accountDetails.phoneNumber === "string") {
-			accountDetails.phoneNumber = parseInt(accountDetails.phoneNumber);
-		}
 		let token = await Storage.get("token");
 		fetch(`https://restiloc.space/api/experts/${expert.id}`, {
 			method: "PUT",
