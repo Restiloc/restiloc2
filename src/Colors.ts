@@ -10,6 +10,7 @@ enum Colors {
 	SettingBackground = '#ebebeb',
 	Success = '#7ee098',
 	CurrentWeek = '#b3e8bc',
+	Green = '#81c995',
 }
 
 export default Colors;

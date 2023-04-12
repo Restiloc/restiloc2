@@ -67,13 +67,6 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 		});
 	}
 
-	const openModal = () => {
-		// Open a model with the reason why the mission is finished if a unavailability exists.
-		if (mission?.unavailability) {
-			console.log("Opening modal with the following reason: " + mission.unavailability.reason.label);
-		}
-	}
-
 	/**
 	 * Formats the date and time of the mission.
 	 * From "2021-05-01 12:00:00" to "01/05/2021 12h00" for example.
@@ -88,7 +81,7 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 	}
 
 	return (
-		<TouchableOpacity onPress={mission.isFinished ? openModal : toMission} style={styles.card}>
+		<TouchableOpacity onPress={toMission} style={styles.card}>
 			<Text style={styles.color}>Mission #{mission.id}</Text>
 			<Text style={styles.color}>{format.hourly()}</Text>
 		</TouchableOpacity>
