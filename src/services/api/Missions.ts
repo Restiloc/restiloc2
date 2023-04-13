@@ -36,9 +36,10 @@ export async function sendUnavailability(body: { reason_id: number, mission_id: 
 	return true;
 }
 
-export async function closeMission(id: string) {
+export async function closeMission(id: string, body: {}) {
 	const response = await Fetch.call(`/missions/${id}`, Methods.PUT, {
-		"isFinished": true
+		"isFinished": true,
+		...body
 	})
 	if (!response) return false;
 	return true;

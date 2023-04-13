@@ -9,6 +9,8 @@ export type MissionType = {
 	kilometersCounter: number;
 	nameExpertFile: string;
 	isFinished: boolean;
+	signature: string;
+	signedByClient: boolean;
 	route: string;
 	vehicle: Vehicle;
 	expert: Expert;
@@ -149,7 +151,6 @@ export type PrestationType = {
 	label: string,
 	description: string,
 	image: string,
-	signature: string,
 	route: string,
 	mission: MissionType[],
 }
@@ -158,5 +159,4 @@ export type NewPrestationType = {
 	label: string,
 	description: string,
 	image: string,
-	signature: string,
 }

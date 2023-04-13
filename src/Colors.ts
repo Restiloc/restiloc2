@@ -11,6 +11,7 @@ enum Colors {
 	Success = '#7ee098',
 	CurrentWeek = '#b3e8bc',
 	Green = '#81c995',
+	Disabled = '#dfdfdf',
 }
 
 export default Colors;

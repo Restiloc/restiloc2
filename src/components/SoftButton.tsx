@@ -4,7 +4,8 @@ import Colors from 'src/Colors'
 type Props = {
 	title: string,
 	onPress: () => void,
-	css?: {}
+	css?: {},
+	disabled?: boolean,
 }
 
 /**
@@ -14,7 +15,7 @@ type Props = {
  * @param onPress - The onPress event of the button.
  * @returns {JSX.Element} Rendered button.
  */
-export default function SoftButton({ title, onPress, css }: Props): JSX.Element {
+export default function SoftButton({ title, onPress, css, disabled = false }: Props): JSX.Element {
 
 	const styles = StyleSheet.create({
 		text: {
@@ -26,17 +27,17 @@ export default function SoftButton({ title, onPress, css }: Props): JSX.Element 
 		container: {
 			marginTop: 5,
 			width: "100%",
-			backgroundColor: Colors.SettingBackground,
+			backgroundColor: disabled ? Colors.Disabled : Colors.SettingBackground,
 			height: 75,
 			borderRadius: 10,
 			justifyContent: "center",
 			...css
 		},
-	})	
+	})
 
 	return (
 		<TouchableOpacity style={styles.container} onPress={onPress}>
-    	<Text style={styles.text}>{ title }</Text>
+			<Text style={styles.text}>{title}</Text>
 		</TouchableOpacity>
 	);
 }

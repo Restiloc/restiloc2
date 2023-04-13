@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, View, Text, ActivityIndicator, RefreshControl } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View, Image, Text, ActivityIndicator, RefreshControl } from "react-native";
 import Storage from "src/services/Storage";
 import { useEffect, useState, useContext, useCallback } from "react";
 import Header from "src/components/Header";
@@ -9,6 +9,7 @@ import Colors from "src/Colors";
 import Button from "src/components/Button";
 import SoftButton from "src/components/SoftButton";
 // import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+// import Modal from "react-native-modal";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,6 +42,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 	const [isClient, setIsClient] = useState(false);
 	const [mission, setMission] = useState<MissionType>();
 	const [refreshing, setRefreshing] = useState(false);
+	// const [showSign, setShowSign] = useState(false);
 	const endpoint = route.params.route;
 	// const coordinates = route.params.coordinates;
 
@@ -103,12 +105,12 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 		});
 	}
 
-	// function toHistory() {
-	// 	navigation.navigate("history", {
-	// 		endpoint: mission?.vehicle.route,
-	// 		vehicle: mission?.vehicle
-	// 	});
-	// }
+	function toHistory() {
+		navigation.navigate("history", {
+			endpoint: mission?.vehicle.route,
+			vehicle: mission?.vehicle
+		});
+	}
 
 	function toUnavailable() {
 		navigation.navigate("unavailable", {
@@ -142,6 +144,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 									) : (
 										<View style={styles.finished}>
 											<Text style={styles.important}>Mission terminée</Text>
+											{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text>						 */}
 										</View>
 									)
 								) : (
@@ -149,6 +152,11 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 								)
 							}
 						</View>
+						{/* {
+							mission?.isFinished ? (
+								<SoftButton title="Voir la signature" onPress={() => { setShowSign(!showSign) }} css={{ marginTop: 0}} />
+							) : (<></>)
+						} */}
 						<View style={styles.details}>
 							<View style={styles.column}>
 								<Text style={[styles.text]}>Type de rendez-vous :</Text>
@@ -190,7 +198,9 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 								<>
 									{
 										!mission.unavailability && mission.pree ? (
-											<SoftButton title="Voir les prestations" onPress={toExpertise} css={{ marginTop: 40, marginBottom: 25 }} />
+											<>
+												<SoftButton title="Voir les prestations" onPress={toExpertise} css={{ marginTop: 40, marginBottom: 20 }} />
+											</>
 										) : (
 											<></>
 										)
@@ -199,11 +209,23 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 							) : (
 								<>
 									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 20 }} />
-									{/* <SoftButton title="Historique du véhicule" onPress={toHistory} /> */}
 								</>
 							)
 						}
+						<SoftButton title="Historique du véhicule" onPress={toHistory} css={{ marginTop: mission?.isFinished ? -15 : 5 }} />
 					</ScrollView>
+					{/* <Modal 
+						isVisible={showSign} 
+						onBackdropPress={() => { setShowSign(!showSign) }}
+						onBackButtonPress={() => { setShowSign(!showSign) }}
+						style={{ height: 300 }}
+					>
+						<View style={styles.modal}>
+							<Text style={styles.title}>Signature du { mission?.signedByClient ? "client" : "garage" }</Text>
+							<Image source={{ uri: `data:image/png;base64,${mission?.signature}` }} style={{ width: 300, height: 300 }} />
+							<SoftButton title="Fermer" onPress={() => { setShowSign(!showSign) }} />
+						</View>
+					</Modal> */}
 					<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => { navigation.goBack() }} />
 				</>
 			)}
@@ -220,6 +242,12 @@ const styles = StyleSheet.create({
 		marginRight: 20,
 		marginTop: 40,
 		flexDirection: "row",
+	},
+	title: {
+		fontSize: 22,
+		color: Colors.Details,
+		fontWeight: "bold",
+		marginBottom: 16,
 	},
 	column: {
 		flex: 1,
@@ -255,6 +283,12 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-evenly",
+	},
+	modal: {
+		backgroundColor: Colors.Primary,
+		padding: 20,
+		borderRadius: 10,
+		// alignItems: "center",
 	},
 	map: {
 		position: 'relative',
