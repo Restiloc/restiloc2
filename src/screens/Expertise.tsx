@@ -1,9 +1,9 @@
-import { Dimensions, View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl, TextInput, Image, TouchableOpacity } from "react-native";
+import { Alert, Dimensions, View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl, TextInput, Image, TouchableOpacity } from "react-native";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
 import type { MissionType, PrestationType } from "src/Types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import SoftButton from "src/components/SoftButton";
 import Button from "src/components/Button";
 import Prestation from "src/components/Prestation";
@@ -11,6 +11,8 @@ import Modal from "react-native-modal";
 // import * as ImagePicker from "react-native-image-picker";
 import { newPrestation } from "src/services/api/Prestations";
 import { closeMission } from "src/services/api/Missions";
+// import Signature from "react-native-signature-canvas";
+// import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { height } = Dimensions.get("window");
 	
@@ -36,8 +38,15 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const [loading, setLoading] = useState(true);
 	const [prestations, setPrestations] = useState<PrestationType[]>([]);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [closeModalVisible, setCloseModalVisible] = useState(false);
 	const [currentPrestationDetails, setCurrentPrestationDetails] = useState<PrestationType>({} as PrestationType);
-	const [showImage, setShowImage] = useState(false);
+	// const [showImage, setShowImage] = useState(false);
+	const [error, setError] = useState(false);
+
+	// let bouncyCheckboxRef: BouncyCheckbox | null = null;
+	// const [sign, setSign] = useState<String>("");
+  // const [expertSign, setExpertSign] = useState(false);
+
 	const { mission } = route.params;
 
 	useEffect(() => {
@@ -79,7 +88,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	// 			console.log('error message', response.errorMessage)
   //     } else {
 	// 			if (response && response.assets){
-	// 				setCurrentPrestationDetails({ ...currentPrestationDetails, image: response.assets[0].base64 ?? "", signature: "tmp" });
+	// 				setCurrentPrestationDetails({ ...currentPrestationDetails, image: response.assets[0].base64 ?? "" });
 	// 				setShowImage(true);
 	// 			}
 	// 		}
@@ -87,17 +96,27 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	// }
 
 	function reset () {
-		setShowImage(false);
+		// setShowImage(false);
+		setError(false)
 		setCurrentPrestationDetails({} as PrestationType);
 		setModalVisible(!modalVisible);
 	}
 
 	function submit () {
+		if (!currentPrestationDetails.label || !currentPrestationDetails.description) {
+			setError(true);
+			return;
+		}
 		setPrestations([...prestations, currentPrestationDetails]);
 		reset();
 	}
 
 	function close () {
+		// console.log(`Signature => ${sign}, expertSign => ${expertSign}`)
+		// if (!isSigned()) {	
+		// 	Alert.alert("Attention!", "Veuillez apposer et valider votre signature.");
+		// 	return;
+		// }
 		(async () => {
 			if (prestations.length > 0) {
 				for (let prestation of prestations) {
@@ -107,7 +126,10 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					});
 				}
 			}
-			await closeMission(mission.id.toString());
+			await closeMission(mission.id.toString(), {
+			// 	signature: sign.split(",")[1], // Cut the signature to get only the base64 string
+			// 	signedByClient: !expertSign
+			});
 			navigation.navigate("planning");
 		})()
 	}
@@ -116,6 +138,16 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		reset();
 		setModalVisible(!modalVisible);
 	}
+	
+	function showCloseModal () {
+		setCloseModalVisible(!closeModalVisible);
+		// setSign("");
+		// setExpertSign(false)
+	}
+
+	// const isSigned = () => {
+	// 	return sign.length > 0;
+	// }
 
 	return (
 		<View style={styles.view}>
@@ -160,7 +192,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 						<>
 							<SoftButton title="Ajouter une prestation" onPress={showModal} css={{marginTop: 20}}/>
 							<View style={styles.container}>
-								<Button title="Clôturer l'expertise" onPress={close} />
+								<Button title="Clôturer l'expertise" onPress={showCloseModal} />
 							</View>
 						</>
 					)
@@ -178,6 +210,13 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					</Text>
 					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} /> */}
 					<View style={styles.form}>
+						{
+							error ? (
+								<Text style={styles.error}>Veuillez remplir tous les champs</Text>
+							) : (
+								<></>
+							)
+						}
 						<Text style={styles.label}>Titre</Text>
 						<TextInput style={styles.input} onChangeText={text => setCurrentPrestationDetails({...currentPrestationDetails, label: text})}/>
 						<Text style={styles.label}>Description</Text>
@@ -196,6 +235,54 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					<SoftButton title="Ajouter une prestation" onPress={submit} css={{marginTop: 2}}/>
 					<SoftButton title="Annuler" onPress={showModal} css={{marginTop: 2}}/>
 				</View>
+			</Modal>
+			<Modal 
+					isVisible={closeModalVisible} 
+					onBackdropPress={showCloseModal}
+					onBackButtonPress={showCloseModal}
+					style={{ height: 300 }}
+			>
+				<ScrollView 
+					style={styles.scrollViewModal} 
+					scrollEnabled={false}
+				>
+					<Text style={styles.title}>Signature</Text>
+					<Text style={{ color: "black", fontSize: 30, textAlign: "center", marginBottom: 60, marginTop: 60, fontWeight: "bold" }}>
+						En cours de développement...
+					</Text>
+					{/* <View style={styles.sign}>
+						<Signature
+							onOK={(img) => setSign(img)}
+							descriptionText=""
+							clearText="Effacer"
+							onClear={() => {
+								setSign("");
+							}}
+							confirmText="Valider"
+							imageType="image/png"
+							dataURL="base64"
+						/>
+					</View>
+					<BouncyCheckbox
+							style={{ marginTop: 16, marginBottom: 16 }}
+							ref={(ref: any) => (bouncyCheckboxRef = ref)}
+							isChecked={expertSign}
+							fillColor={Colors.Secondary}
+							text="Signature de l'expert"
+							disableBuiltInState
+							textStyle={{
+								textDecorationLine: "none",
+							}}
+							onPress={() => setExpertSign(!expertSign)}
+						/> */}
+					<SoftButton 
+						title="Clôturer l'expertise" 
+						onPress={close} 
+						css={{marginTop: 2}}
+						// disabled={!isSigned()}
+					/>
+					<SoftButton title="Annuler" onPress={showCloseModal} css={{marginTop: 2 }}/>
+				</ScrollView>
 			</Modal>
 			<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => navigation.goBack()} />
 		</View>
@@ -243,11 +330,21 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		marginTop: 16,
 	},
+	sign: {
+		height: 355,
+	},
 	modal: {
 		backgroundColor: Colors.Primary,
 		padding: 20,
 		borderRadius: 10,
 		alignItems: "center"
+	},
+	scrollViewModal: {
+		backgroundColor: Colors.Primary,
+		padding: 20,
+		borderRadius: 10,
+		// maxHeight: 660,
+		maxHeight: 450
 	},
 	input: {
 		borderWidth: 1,
@@ -269,5 +366,14 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		marginBottom: 50,
+	},
+	error: {
+		color: "black",
+		backgroundColor: Colors.Error,
+		padding: 10,
+		width: 250,
+		textAlign: "center",
+		marginBottom: 20,
+		borderRadius: 10,
 	}
 });
