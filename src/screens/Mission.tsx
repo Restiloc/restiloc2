@@ -208,11 +208,15 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 								</>
 							) : (
 								<>
-									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 20 }} />
+									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 40 }} />
 								</>
 							)
 						}
-						<SoftButton title="Historique du véhicule" onPress={toHistory} css={{ marginTop: mission?.isFinished ? -15 : 5 }} />
+						<SoftButton 
+							title="Historique du véhicule" 
+							onPress={toHistory} 
+							css={{ marginTop: mission?.isFinished ? ( mission.unavailability ? 40 : -15 ) : 5 }}
+						/>
 					</ScrollView>
 					{/* <Modal 
 						isVisible={showSign} 
