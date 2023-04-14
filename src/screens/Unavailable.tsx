@@ -8,6 +8,8 @@ import Button from "src/components/Button";
 import DropdownSelect from "react-native-input-select";
 import { getReasons } from "src/services/api/Reasons";
 import { sendUnavailability } from "src/services/api/Missions";
+import Network from "src/services/Network";
+import Storage from "src/services/Storage";
 
 const { height } = Dimensions.get("window");
 
@@ -51,12 +53,26 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 		}
 		// @ts-ignore
 		console.log(`For missions #${mission.id}, the reason is: ${unavailabilityReason}, corresponding to the reason: ${reasons.find((reason: ReasonType) => reason.id === unavailabilityReason).label}`);
-		const response = await sendUnavailability({
-			// @ts-ignore
-			mission_id: mission.id,
-			// @ts-ignore
-			reason_id: unavailabilityReason
-		});
+
+		let network = await Network.isOk();
+		let response; 
+
+		if (network) {
+			response = await sendUnavailability({
+				// @ts-ignore
+				mission_id: mission.id,
+				// @ts-ignore
+				reason_id: unavailabilityReason
+			});
+		} else {
+			Storage.save({
+				type: "unavailability",
+				mission_id: mission?.id,
+				reason_id: unavailabilityReason
+			})
+			response = true;
+		}
+
 		if (!response) {
 			setError(true)
 		} else {

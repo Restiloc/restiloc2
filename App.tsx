@@ -17,16 +17,19 @@ import Unavailable from 'src/screens/Unavailable';
 import Expertise from 'src/screens/Expertise';
 import PeriodStatistics from 'src/screens/PeriodStatistics';
 import Years from 'src/screens/Years';
+import Weeks from 'src/screens/Weeks';
+import WeekStatistics from 'src/screens/WeekStatistics';
 
 /**
  * Services
  */
 import { authenticated, login, logout } from 'src/services/api/Auth';
 import { Credentials } from 'src/Types';
-import Weeks from 'src/screens/Weeks';
-import WeekStatistics from 'src/screens/WeekStatistics';
+import Observer from 'src/services/Observer';
 
 enableLatestRenderer();
+
+// Observer.networkObserver();
 
 const Stack = createNativeStackNavigator();
 

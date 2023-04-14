@@ -2,6 +2,10 @@ import Storage from "src/services/Storage";
 import { __DOMAIN__ } from "src/Constants";
 import { Methods } from "src/Enum";
 
+/**
+ * @class - Customize your fetch request
+ * @method call - Configure the fetch call with differents parameters
+ */
 export default class Fetch {
 
 	/**

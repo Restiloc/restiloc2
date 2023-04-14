@@ -160,3 +160,12 @@ export type NewPrestationType = {
 	description: string,
 	image: string,
 }
+
+export type Hydrate = {
+	type: string,
+	mission_id: number,
+	reason_id?: number,
+	prestations?: PrestationType[],
+	signature?: string,
+	signedByClient?: boolean,
+}

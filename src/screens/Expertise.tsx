@@ -11,10 +11,12 @@ import Modal from "react-native-modal";
 // import * as ImagePicker from "react-native-image-picker";
 import { newPrestation } from "src/services/api/Prestations";
 import { closeMission } from "src/services/api/Missions";
+import Network from "src/services/Network";
+import Storage from "src/services/Storage";
 // import Signature from "react-native-signature-canvas";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");	
 	
 type Props = {
 	navigation: any;
@@ -50,7 +52,9 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const { mission } = route.params;
 
 	useEffect(() => {
-		setLoading(false);
+		(async () => {
+			setLoading(false);
+		})()
 	}, [])
 
 	const onRefresh = useCallback(() => {
@@ -118,18 +122,30 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		// 	return;
 		// }
 		(async () => {
-			if (prestations.length > 0) {
-				for (let prestation of prestations) {
-					await newPrestation({
-						mission_id: mission.id,						
-						...prestation
-					});
+			let network = await Network.isOk();
+			console.log(network)
+			if (network) {
+				if (prestations.length > 0) {
+					for (let prestation of prestations) {
+						await newPrestation({
+							mission_id: mission.id,						
+							...prestation
+						});
+					}
 				}
+				await closeMission(mission.id.toString(), {
+					// signature: sign,
+					// signedByClient: !expertSign
+				});
+			} else {
+				Storage.save({
+					type: "closedMissions",
+					mission_id: mission.id,
+					prestations: prestations,
+					// signature: sign,
+					// signedByClient: !expertSign
+				});
 			}
-			await closeMission(mission.id.toString(), {
-			// 	signature: sign.split(",")[1], // Cut the signature to get only the base64 string
-			// 	signedByClient: !expertSign
-			});
 			navigation.navigate("planning");
 		})()
 	}
@@ -207,8 +223,8 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 				<View style={styles.modal}>
 					{/* <Text style={{ color: "black", fontSize: 30, textAlign: "center", marginBottom: 60, marginTop: 60, fontWeight: "bold" }}>
 						En cours de développement...
-					</Text>
-					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} /> */}
+					</Text> */}
+					{/* <SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} /> */}
 					<View style={styles.form}>
 						{
 							error ? (
@@ -252,7 +268,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					</Text>
 					{/* <View style={styles.sign}>
 						<Signature
-							onOK={(img) => setSign(img)}
+							onOK={(img) => setSign(img.split(",")[1])}
 							descriptionText=""
 							clearText="Effacer"
 							onClear={() => {
@@ -261,9 +277,11 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 							confirmText="Valider"
 							imageType="image/png"
 							dataURL="base64"
+							minWidth={2}
+							maxWidth={2}
 						/>
-					</View>
-					<BouncyCheckbox
+					</View> */}
+					{/* <BouncyCheckbox
 							style={{ marginTop: 16, marginBottom: 16 }}
 							ref={(ref: any) => (bouncyCheckboxRef = ref)}
 							isChecked={expertSign}
