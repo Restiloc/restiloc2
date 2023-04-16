@@ -183,7 +183,7 @@ export default function Settings({ navigation }: Props): JSX.Element {
 										defaultValue={expert.phoneNumber}
 										onChangeText={text => setAccountDetails({ ...accountDetails, phoneNumber: text })}
 									/>
-									<SoftButton title="Sauvegarder" onPress={confirmUpdate} />
+									<SoftButton title="Sauvegarder" onPress={confirmUpdate} css={{ marginTop: 20 }} />
 									<SoftButton title="Se déconnecter" onPress={confirmSignOut} css={{ marginBottom: 20 }} />
 								</View>
 							</>

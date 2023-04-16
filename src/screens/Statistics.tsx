@@ -69,7 +69,7 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 				{
 					refreshing ? <></> : <>
 						<Text style={styles.title}>Statistiques</Text>
-						{loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> :
+						{loading ? <ActivityIndicator size="large" color={Colors.Secondary} style={{ marginTop: 20 }} /> :
 							<>
 								<View style={styles.cards}>
 									{
@@ -84,7 +84,7 @@ export default function Statistics({ navigation }: Props): JSX.Element {
 								</View>
 							</>
 						}
-						<SoftButton title="Saisir une période" onPress={() => { setModalVisible(!modalVisible) }} css={{ marginTop: 40 }} />
+						<SoftButton title="Saisir une période" onPress={() => { setModalVisible(!modalVisible) }} css={{ marginTop: 20 }} />
 						{/* <SoftButton title="Plus de statistiques" onPress={moreStats} /> */}
 						<SoftButton title="Plus de statistiques" onPress={() => { setModalVisible(!modalVisible) }} />
 					</>

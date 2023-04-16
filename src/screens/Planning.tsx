@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, View, RefreshControl, Alert, ActivityIndicator } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View, RefreshControl, ActivityIndicator } from "react-native";
 import Storage from "src/services/Storage";
 import { useEffect, useState, useContext, useCallback } from "react";
 import Navbar from "src/components/Navbar";
@@ -6,14 +6,19 @@ import Header from "src/components/Header";
 import { AuthContext } from "../../App";
 import Popup, { PopupType } from "src/components/Popup";
 import TodayMissions from "src/components/TodayMissions";
-import ExpertMissions from "src/components/ExpertMissions";
-import FinishedMissions from "src/components/FinishedMissions";
 import { authenticated } from "src/services/api/Auth";
+import SoftButton from "src/components/SoftButton";
+import Colors from "src/Colors";
 
 const { height } = Dimensions.get("window");
 
 type Props = {
 	navigation: any;
+	route: {
+		params: {
+			refresh?: boolean;
+		}
+	}
 }
 
 /**
@@ -22,13 +27,13 @@ type Props = {
 * @param navigation - The navigation of the app.
 * @returns {JSX.Element} The login page.
 */
-export default function Planning({ navigation }: Props): JSX.Element {
+export default function Planning({ navigation, route }: Props): JSX.Element {
 
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
 	const [welcome, setWelcome] = useState<boolean>(false);
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(true);
+	const { refresh } = route.params ?? false;
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
@@ -49,7 +54,6 @@ export default function Planning({ navigation }: Props): JSX.Element {
 				setTimeout(() => { setWelcome(false); }, 5000);
 			}
 			console.log("Expert is authenticated, getting token.");
-			setLoading(false);
 		})()
 	}, [])
 
@@ -61,10 +65,10 @@ export default function Planning({ navigation }: Props): JSX.Element {
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>
 				{
-					refreshing ? <></> : <>
+					refreshing ? <ActivityIndicator size="large" color={Colors.Secondary} style={{ marginTop: 120 }} /> : <>
 						<TodayMissions navigation={navigation} />
-						<ExpertMissions navigation={navigation} />
-						<FinishedMissions navigation={navigation} />
+						<SoftButton title="Toutes les missions" onPress={() => navigation.navigate("missions")} css={{marginTop: 40}}/>
+						<SoftButton title="Missions terminées" onPress={() => navigation.navigate("finishedMissions")} />
 					</>
 				}
 			</ScrollView>

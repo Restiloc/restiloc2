@@ -1,6 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import Colors from "../Colors";
-import Storage from "src/services/Storage";
 import { useEffect, useState } from "react";
 import { MissionType } from "src/Types";
 import Mission from "./Mission";

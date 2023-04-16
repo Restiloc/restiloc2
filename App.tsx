@@ -19,13 +19,15 @@ import PeriodStatistics from 'src/screens/PeriodStatistics';
 import Years from 'src/screens/Years';
 import Weeks from 'src/screens/Weeks';
 import WeekStatistics from 'src/screens/WeekStatistics';
+import Missions from 'src/screens/Missions';
+import FinishedMissions from 'src/screens/FinishedMissions';
 
 /**
  * Services
  */
 import { authenticated, login, logout } from 'src/services/api/Auth';
 import { Credentials } from 'src/Types';
-import Observer from 'src/services/Observer';
+// import Observer from 'src/services/Observer';
 
 enableLatestRenderer();
 
@@ -99,6 +101,8 @@ function App(): JSX.Element {
         ) : (
           <>
             <Stack.Screen name="planning" component={ Planning } options={{ headerShown: false, animation:'none' }} />
+            <Stack.Screen name="missions" component={ Missions } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
+            <Stack.Screen name="finishedMissions" component={ FinishedMissions } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
             {/* @ts-ignore */}
             <Stack.Screen name="mission" component={ Mission } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_bottom' }} />
             <Stack.Screen name="statistics" component={ Statistics } options={{ headerShown: false, animation:'none' }} />

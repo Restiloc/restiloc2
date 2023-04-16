@@ -146,7 +146,9 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					// signedByClient: !expertSign
 				});
 			}
-			navigation.navigate("planning");
+			navigation.navigate("planning", {
+				refresh: true
+			});
 		})()
 	}
 

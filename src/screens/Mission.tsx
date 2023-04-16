@@ -83,7 +83,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 					setLoading(false);
 				})
 		})()
-	}, [])
+	}, [refreshing])
 
 	const format = {
 		address: () => {
@@ -131,92 +131,98 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 							<Text style={styles.text}>Mission #{mission?.id}</Text>
 							<Text style={styles.text}>{format.hourly()}</Text>
 						</View>
-						<View style={styles.container}>
-							<Text style={styles.address}>{format.address()}</Text>
-						</View>
-						<View style={styles.container}>
-							{
-								mission?.isFinished ? (
-									mission.unavailability ? (
-										<View style={styles.unavailability}>
-											<Text style={styles.important}>{ mission?.unavailability.reason.label }</Text>
-										</View>
-									) : (
-										<View style={styles.finished}>
-											<Text style={styles.important}>Mission terminée</Text>
-											{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text>						 */}
-										</View>
-									)
-								) : (
-									<Button title="Expertiser ce véhicule" onPress={toExpertise} />
-								)
-							}
-						</View>
-						{/* {
-							mission?.isFinished ? (
-								<SoftButton title="Voir la signature" onPress={() => { setShowSign(!showSign) }} css={{ marginTop: 0}} />
-							) : (<></>)
-						} */}
-						<View style={styles.details}>
-							<View style={styles.column}>
-								<Text style={[styles.text]}>Type de rendez-vous :</Text>
-								<Text style={[styles.text]}>Marque du véhicule   :</Text>
-								<Text style={[styles.text]}>Modèle du véhicule   :</Text>
-								<Text style={[styles.text]}>Couleur du véhicule  :</Text>
-								<Text style={[styles.text]}>Kilomètres réalisés   :</Text>
-							</View>
-							<View style={styles.column}>
-								<Text style={[styles.text]}>{isClient ? "Client" : "Garage"}</Text>
-								<Text style={[styles.text]}>{mission?.vehicle.model.brand}</Text>
-								<Text style={[styles.text]}>{mission?.vehicle.model.label}</Text>
-								<Text style={[styles.text]}>{mission?.vehicle.color}</Text>
-								<Text style={[styles.text]}>{mission?.kilometersCounter}</Text>
-							</View>
-						</View>
-						{/* <View style={styles.map}>
-							{
-								loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
-									<MapView
-										style={styles.mapView}
-										provider={PROVIDER_GOOGLE}
-										region={{
-											latitude: coordinates.latitude,
-											longitude: coordinates.longitude,
-											latitudeDelta: 0.0922,
-											longitudeDelta: 0.0421,
-										}} >
-										<Marker
-											coordinate={{ latitude: coordinates.latitude, longitude: coordinates.longitude }}
-											title={ coordinates.title }
-											description="" />
-									</MapView>
-								)
-							}
-						</View> */}
 						{
-							mission?.isFinished ? (
+							refreshing ? <ActivityIndicator size="large" color={Colors.Secondary} style={{marginTop: 40}} /> : (
 								<>
+									<View style={styles.container}>
+										<Text style={styles.address}>{format.address()}</Text>
+									</View>
+									<View style={styles.container}>
+										{
+											mission?.isFinished ? (
+												mission.unavailability ? (
+													<View style={styles.unavailability}>
+														<Text style={styles.important}>{ mission?.unavailability.reason.label }</Text>
+													</View>
+												) : (
+													<View style={styles.finished}>
+														<Text style={styles.important}>Mission terminée</Text>
+														{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text>						 */}
+													</View>
+												)
+											) : (
+												<Button title="Expertiser ce véhicule" onPress={toExpertise} />
+											)
+										}
+									</View>
+									{/* {
+										mission?.isFinished ? (
+											<SoftButton title="Voir la signature" onPress={() => { setShowSign(!showSign) }} css={{ marginTop: 0}} />
+										) : (<></>)
+									} */}
+									<View style={styles.details}>
+										<View style={styles.column}>
+											<Text style={[styles.text]}>Type de rendez-vous :</Text>
+											<Text style={[styles.text]}>Marque du véhicule   :</Text>
+											<Text style={[styles.text]}>Modèle du véhicule   :</Text>
+											<Text style={[styles.text]}>Couleur du véhicule  :</Text>
+											<Text style={[styles.text]}>Kilomètres réalisés   :</Text>
+										</View>
+										<View style={styles.column}>
+											<Text style={[styles.text]}>{isClient ? "Client" : "Garage"}</Text>
+											<Text style={[styles.text]}>{mission?.vehicle.model.brand}</Text>
+											<Text style={[styles.text]}>{mission?.vehicle.model.label}</Text>
+											<Text style={[styles.text]}>{mission?.vehicle.color}</Text>
+											<Text style={[styles.text]}>{mission?.kilometersCounter}</Text>
+										</View>
+									</View>
+									{/* <View style={styles.map}>
+										{
+											loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
+												<MapView
+													style={styles.mapView}
+													provider={PROVIDER_GOOGLE}
+													region={{
+														latitude: coordinates.latitude,
+														longitude: coordinates.longitude,
+														latitudeDelta: 0.0922,
+														longitudeDelta: 0.0421,
+													}} >
+													<Marker
+														coordinate={{ latitude: coordinates.latitude, longitude: coordinates.longitude }}
+														title={ coordinates.title }
+														description="" />
+												</MapView>
+											)
+										}
+									</View> */}
 									{
-										!mission.unavailability && mission.pree ? (
+										mission?.isFinished ? (
 											<>
-												<SoftButton title="Voir les prestations" onPress={toExpertise} css={{ marginTop: 40, marginBottom: 20 }} />
+												{
+													!mission.unavailability && mission.pree ? (
+														<>
+															<SoftButton title="Voir les prestations" onPress={toExpertise} css={{ marginTop: 40, marginBottom: 20 }} />
+														</>
+													) : (
+														<></>
+													)
+												}
 											</>
 										) : (
-											<></>
+											<>
+												<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 40 }} />
+											</>
 										)
 									}
-								</>
-							) : (
-								<>
-									<SoftButton title="Véhicule indisponible" onPress={toUnavailable} css={{ marginTop: 40 }} />
+									<SoftButton 
+										title="Historique du véhicule" 
+										onPress={toHistory} 
+										css={{ marginTop: mission?.isFinished ? ( mission.unavailability ? 40 : -15 ) : 5 }}
+									/>
 								</>
 							)
 						}
-						<SoftButton 
-							title="Historique du véhicule" 
-							onPress={toHistory} 
-							css={{ marginTop: mission?.isFinished ? ( mission.unavailability ? 40 : -15 ) : 5 }}
-						/>
 					</ScrollView>
 					{/* <Modal 
 						isVisible={showSign} 
