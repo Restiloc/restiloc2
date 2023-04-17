@@ -147,7 +147,10 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 				});
 			}
 			navigation.navigate("planning", {
-				refresh: true
+				closedMission: {
+					state: true,
+					id: mission.id.toString()
+				}
 			});
 		})()
 	}

@@ -16,7 +16,10 @@ type Props = {
 	navigation: any;
 	route: {
 		params: {
-			refresh?: boolean;
+			closedMission?: {
+				state: boolean;
+				id: string;
+			}
 		}
 	}
 }
@@ -33,7 +36,7 @@ export default function Planning({ navigation, route }: Props): JSX.Element {
 	const { signOut } = useContext(AuthContext);
 	const [welcome, setWelcome] = useState<boolean>(false);
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-	const { refresh } = route.params ?? false;
+	const { closedMission } = route.params ?? false;
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
@@ -51,16 +54,20 @@ export default function Planning({ navigation, route }: Props): JSX.Element {
 				console.log("Expert coming from login screen, show login success message.");
 				setWelcome(true);
 				await Storage.remove("fromLoginScreen");
-				setTimeout(() => { setWelcome(false); }, 5000);
 			}
 			console.log("Expert is authenticated, getting token.");
 		})()
 	}, [])
 
+	const format = {
+		refreshTitle: `Mission #${closedMission?.id} cloturée`
+	}
+
 	return (
 		<View style={styles.view}>
 			<Header />
 			{welcome ? <Popup type={PopupType.Success} title="Bienvenue sur Restiloc !" /> : <></>}
+			{closedMission && closedMission.state ? <Popup type={PopupType.Success} title={format.refreshTitle} /> : <></>}
 			<ScrollView style={styles.planning} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>

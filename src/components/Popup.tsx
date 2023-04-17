@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import Colors from 'src/Colors';
 
@@ -15,6 +15,12 @@ type Props = {
 }
 
 export default function Popup({type, title}: Props): JSX.Element {
+
+	const [show, setShow] = useState<boolean>(true);
+
+	useEffect(() => {
+		setTimeout(() => { setShow(false) }, 4000);
+	}, [])
 
 	const styles = StyleSheet.create({
 		container: {
@@ -47,8 +53,10 @@ export default function Popup({type, title}: Props): JSX.Element {
 	}
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.text}>{ title }</Text>
-		</View>
+		show ? (
+			<View style={styles.container}>
+				<Text style={styles.text}>{ title }</Text>
+			</View>
+		) : <></>
 	)
 }
