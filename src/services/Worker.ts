@@ -29,8 +29,9 @@ export default class Worker {
 						switch (data.type) {
 							case "unavailability":
 								console.log(`An unavailability has been found in the storage. It will be hydrated.`);
-								if (data.mission_id && data.reason_id) {
+								if (data.mission_id && data.reason_id && data.customerResponsible) {
 									await sendUnavailability({
+										customerResponsible: data.customerResponsible,
 										mission_id: data.mission_id,
 										reason_id: data.reason_id,
 									})

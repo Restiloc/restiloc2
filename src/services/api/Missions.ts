@@ -32,7 +32,7 @@ export async function getMission(endpoint: string) {
 	return data;
 }
 
-export async function sendUnavailability(body: { reason_id: number, mission_id: number }) {
+export async function sendUnavailability(body: { customerResponsible: boolean, reason_id: number, mission_id: number }) {
 	const response = await Fetch.call("/unavailabilities", Methods.POST, body)
 	if (!response) return false;
 	return true;

@@ -10,6 +10,7 @@ import { getReasons } from "src/services/api/Reasons";
 import { sendUnavailability } from "src/services/api/Missions";
 import Network from "src/services/Network";
 import Storage from "src/services/Storage";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { height } = Dimensions.get("window");
 
@@ -37,6 +38,9 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 	const [reasons, setReasons] = useState<ReasonType[]>([]);
 	const [error, setError] = useState<boolean>(false);
 
+	let bouncyCheckboxRef: BouncyCheckbox | null = null;
+  const [customerResponsible, setCustomerResponsible] = useState<boolean>(false);
+
 	useEffect(() => {
 		(async () => {
 			const reasons = await getReasons();
@@ -55,10 +59,11 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 		console.log(`For missions #${mission.id}, the reason is: ${unavailabilityReason}, corresponding to the reason: ${reasons.find((reason: ReasonType) => reason.id === unavailabilityReason).label}`);
 
 		let network = await Network.isOk();
-		let response; 
+		let response;
 
 		if (network) {
 			response = await sendUnavailability({
+				customerResponsible: customerResponsible,
 				// @ts-ignore
 				mission_id: mission.id,
 				// @ts-ignore
@@ -67,6 +72,7 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 		} else {
 			Storage.save({
 				type: "unavailability",
+				customerResponsible: customerResponsible,
 				mission_id: mission?.id,
 				reason_id: unavailabilityReason
 			})
@@ -77,7 +83,12 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 			setError(true)
 		} else {
 			setError(false);
-			navigation.navigate("planning");
+			navigation.navigate("planning", {
+				closedMission: {
+					state: true,
+					id: mission?.id
+				}
+			});
 		}
 	}
 
@@ -103,6 +114,20 @@ export default function Unavailable({ navigation, route }: Props): JSX.Element {
 							onValueChange={(text: string) => { setUnavailabilityReason(text) }}
 							primaryColor={'green'}
 						/>
+						<View style={styles.checkboxContainer}>
+							<BouncyCheckbox
+								style={{ marginBottom: 25 }}
+								ref={(ref: any) => (bouncyCheckboxRef = ref)}
+								isChecked={customerResponsible}
+								fillColor={Colors.Secondary}
+								text="Client responsable"
+								disableBuiltInState
+								textStyle={{
+									textDecorationLine: "none",
+								}}
+								onPress={() => setCustomerResponsible(!customerResponsible)}
+							/>
+						</View>
 						<Button title="Soumettre" onPress={submitUnavailability} />
 					</>
 				}
@@ -167,6 +192,9 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontSize: 16,
 		marginBottom: 15,
+		width: 300,
+	},
+	checkboxContainer: {
 		width: 300,
 	}
 });

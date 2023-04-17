@@ -163,6 +163,7 @@ export type NewPrestationType = {
 
 export type Hydrate = {
 	type: string,
+	customerResponsible?: boolean,
 	mission_id: number,
 	reason_id?: number,
 	prestations?: PrestationType[],

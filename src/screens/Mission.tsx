@@ -143,11 +143,16 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 												mission.unavailability ? (
 													<View style={styles.unavailability}>
 														<Text style={styles.important}>{ mission?.unavailability.reason.label }</Text>
+														{
+															mission?.unavailability.customerResponsible ? (
+																<Text style={{textAlign: "center", marginTop: 4}}>Client responsable</Text>
+															) : <></>
+														}
 													</View>
 												) : (
 													<View style={styles.finished}>
 														<Text style={styles.important}>Mission terminée</Text>
-														{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text>						 */}
+														{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text> */}
 													</View>
 												)
 											) : (
