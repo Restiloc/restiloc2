@@ -1,6 +1,7 @@
 import { Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import Colors from 'src/Colors';
 import { MissionType } from 'src/Types';
+import { format } from 'src/Constants';
 
 const { width } = Dimensions.get("window");
 
@@ -66,23 +67,10 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 		});
 	}
 
-	/**
-	 * Formats the date and time of the mission.
-	 * From "2021-05-01 12:00:00" to "01/05/2021 12h00" for example.
-	 */
-	const format = {
-		hourly: () => {
-			let date = (mission?.dateMission ?? "").split("-").reverse().join("/"),
-			time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
-			if (!date || !time) return "Date inconnue";
-			return `le ${date} à ${time}`
-		}
-	}
-
 	return (
 		<TouchableOpacity onPress={toMission} style={styles.card}>
 			<Text style={styles.color}>Mission #{mission.id}</Text>
-			<Text style={styles.color}>{format.hourly()}</Text>
+			<Text style={styles.color}>{format.hourly(mission)}</Text>
 		</TouchableOpacity>
 	)
 }

@@ -43,7 +43,7 @@ export type Expert = {
 export type Vehicle = {
 	message?: string,
 	id: number,
-	licensePlate: string,
+	licencePlate: string,
 	color: string,
 	releaseYear: number,
 	route: string,
@@ -169,4 +169,9 @@ export type Hydrate = {
 	prestations?: PrestationType[],
 	signature?: string,
 	signedByClient?: boolean,
+}
+
+export type ClosedMissionType = {
+	state: boolean,
+	id: number
 }

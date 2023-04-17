@@ -4,6 +4,7 @@ import Colors from 'src/Colors'
 import type { PrestationType } from 'src/Types';
 import Modal from "react-native-modal";
 import SoftButton from './SoftButton';
+import { format } from 'src/Constants';
 
 type Props = {
 	prestation: PrestationType;
@@ -63,15 +64,7 @@ export default function Prestation({ prestation }: Props): JSX.Element {
 			alignSelf: "center",
 		}
 	})
-
-	const format = {
-		description: (): string => {
-			return prestation.description.substring(0, 20) + "..."
-		}
-	}
 	
-	console.log(prestation.image)
-
 	return (
 		<TouchableOpacity style={styles.container} onPress={() => { setModalVisible(!modalVisible) }}>
 			<View style={styles.top}>
@@ -84,7 +77,7 @@ export default function Prestation({ prestation }: Props): JSX.Element {
 					)
 				}
 			</View>
-			<Text style={styles.text}>{ format.description() }</Text>
+			<Text style={styles.text}>{ format.description(prestation) }</Text>
 			<Modal
 				isVisible={modalVisible}
 				style={{ height: 300 }}

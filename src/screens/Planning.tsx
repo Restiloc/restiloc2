@@ -9,6 +9,8 @@ import TodayMissions from "src/components/TodayMissions";
 import { authenticated } from "src/services/api/Auth";
 import SoftButton from "src/components/SoftButton";
 import Colors from "src/Colors";
+import { ClosedMissionType } from "src/Types";
+import { format } from "src/Constants";
 
 const { height } = Dimensions.get("window");
 
@@ -16,10 +18,7 @@ type Props = {
 	navigation: any;
 	route: {
 		params: {
-			closedMission?: {
-				state: boolean;
-				id: string;
-			}
+			closedMission?: ClosedMissionType
 		}
 	}
 }
@@ -59,15 +58,11 @@ export default function Planning({ navigation, route }: Props): JSX.Element {
 		})()
 	}, [])
 
-	const format = {
-		refreshTitle: `Mission #${closedMission?.id} cloturée`
-	}
-
 	return (
 		<View style={styles.view}>
 			<Header />
 			{welcome ? <Popup type={PopupType.Success} title="Bienvenue sur Restiloc !" /> : <></>}
-			{closedMission && closedMission.state ? <Popup type={PopupType.Success} title={format.refreshTitle} /> : <></>}
+			{closedMission && closedMission.state ? <Popup type={PopupType.Success} title={format.refreshTitle(closedMission)} /> : <></>}
 			<ScrollView style={styles.planning} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}>

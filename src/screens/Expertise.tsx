@@ -13,6 +13,7 @@ import { newPrestation } from "src/services/api/Prestations";
 import { closeMission } from "src/services/api/Missions";
 import Network from "src/services/Network";
 import Storage from "src/services/Storage";
+import { format } from "src/Constants";
 // import Signature from "react-native-signature-canvas";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -65,15 +66,6 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 			setLoading(false);
 		}, 250);
 	}, []);
-
-	const format = {
-		hourly: () => {
-			let date = (mission?.dateMission ?? "").split("-").reverse().join("/"),
-				time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
-			if (!date || !time) return "Date inconnue";
-			return `le ${date} à ${time}`
-		}
-	}
 
 	// const launchCamera = () => {
 	// 	ImagePicker.launchCamera({
@@ -178,7 +170,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 			}>
 				<View style={styles.card}>
 					<Text style={styles.text}>Mission #{mission?.id}</Text>
-					<Text style={styles.text}>{format.hourly()}</Text>
+					<Text style={styles.text}>{format.hourly(mission)}</Text>
 				</View>
 				<View>
 					{ loading ? ( 

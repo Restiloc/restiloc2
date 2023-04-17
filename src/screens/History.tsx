@@ -5,6 +5,7 @@ import Arrow, { Directions, Positions } from "src/components/Arrow";
 import { Vehicle } from "src/Types";
 import { useEffect, useState } from "react";
 import Mission from "src/components/Mission";
+import { format } from "src/Constants";
 
 const { height } = Dimensions.get("window");
 
@@ -45,14 +46,18 @@ export default function History({ navigation, route }: Props): JSX.Element {
 						<Text style={styles.title}>Détails du véhicule</Text>
 						<View style={styles.details}>
 							<View style={styles.column}>
-								<Text style={[styles.text]}>Marque du véhicule  :</Text>
-								<Text style={[styles.text]}>Modèle du véhicule  :</Text>
-								<Text style={[styles.text]}>Couleur du véhicule :</Text>
+								<Text style={[styles.text]}>Pl. d'immatriculation :</Text>
+								<Text style={[styles.text]}>Marque du véhicule   :</Text>
+								<Text style={[styles.text]}>Modèle du véhicule   :</Text>
+								<Text style={[styles.text]}>Couleur du véhicule  :</Text>
+								<Text style={[styles.text]}>Mise en circulation    :</Text>
 							</View>
 							<View style={styles.column}>
+								<Text style={[styles.text]}>{format.licencePlate(vehicle)}</Text>
 								<Text style={[styles.text]}>{vehicle?.model?.brand}</Text>
 								<Text style={[styles.text]}>{vehicle?.model?.label}</Text>
 								<Text style={[styles.text]}>{vehicle?.color}</Text>
+								<Text style={[styles.text]}>{vehicle?.releaseYear}</Text>
 							</View>
 						</View>
 						<Text style={styles.title}>Expertises réalisées</Text>

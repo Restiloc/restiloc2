@@ -3,11 +3,12 @@ import Storage from "src/services/Storage";
 import { useEffect, useState, useContext, useCallback } from "react";
 import Header from "src/components/Header";
 import { AuthContext } from "../../App";
-import type { Client, Garage, MissionType } from "../Types";
+import type { MissionType } from "../Types";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
 import Colors from "src/Colors";
 import Button from "src/components/Button";
 import SoftButton from "src/components/SoftButton";
+import { format } from "src/Constants";
 // import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 // import Modal from "react-native-modal";
 
@@ -85,20 +86,6 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 		})()
 	}, [refreshing])
 
-	const format = {
-		address: () => {
-			let type: Garage | Client | undefined = isClient ? mission?.client : mission?.garage;
-			if (type === undefined) return "Adresse inconnue";
-			return `${type?.addressNumber} ${type?.street}, ${type?.postalCode} ${type?.city}`
-		},
-		hourly: () => {
-			let date = (mission?.dateMission ?? "").split("-").reverse().join("/"),
-				time = (mission?.startedAt ?? "").split(":").slice(0, 2).join("h");
-			if (!date || !time) return "Date inconnue";
-			return `le ${date} à ${time}`
-		}
-	}
-
 	function toExpertise() {
 		navigation.navigate("expertise", {
 			mission: mission
@@ -129,13 +116,13 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 					}>
 						<View style={styles.card}>
 							<Text style={styles.text}>Mission #{mission?.id}</Text>
-							<Text style={styles.text}>{format.hourly()}</Text>
+							<Text style={styles.text}>{format.hourly(mission)}</Text>
 						</View>
 						{
 							refreshing ? <ActivityIndicator size="large" color={Colors.Secondary} style={{marginTop: 40}} /> : (
 								<>
 									<View style={styles.container}>
-										<Text style={styles.address}>{format.address()}</Text>
+										<Text style={styles.address}>{format.address(isClient, mission)}</Text>
 									</View>
 									<View style={styles.container}>
 										{
@@ -168,6 +155,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 									<View style={styles.details}>
 										<View style={styles.column}>
 											<Text style={[styles.text]}>Type de rendez-vous :</Text>
+											<Text style={[styles.text]}>Pl. d'immatriculation :</Text>
 											<Text style={[styles.text]}>Marque du véhicule   :</Text>
 											<Text style={[styles.text]}>Modèle du véhicule   :</Text>
 											<Text style={[styles.text]}>Couleur du véhicule  :</Text>
@@ -175,6 +163,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 										</View>
 										<View style={styles.column}>
 											<Text style={[styles.text]}>{isClient ? "Client" : "Garage"}</Text>
+											<Text style={[styles.text]}>{format.licencePlate(mission?.vehicle)}</Text>
 											<Text style={[styles.text]}>{mission?.vehicle.model.brand}</Text>
 											<Text style={[styles.text]}>{mission?.vehicle.model.label}</Text>
 											<Text style={[styles.text]}>{mission?.vehicle.color}</Text>
