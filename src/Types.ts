@@ -166,7 +166,7 @@ export type Hydrate = {
 	customerResponsible?: boolean,
 	mission_id: number,
 	reason_id?: number,
-	prestations?: PrestationType[],
+	prestation?: PrestationType,
 	signature?: string,
 	signedByClient?: boolean,
 }

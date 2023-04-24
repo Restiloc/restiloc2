@@ -56,23 +56,23 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	useEffect(() => {
 		setLoading(true);
 		(async () => {
+			let network = await Network.isOk();
+			if (!network) return;
 			console.log(`Update called => ${update}`)
 			let m: MissionType|boolean = await getMission(mission.id);
 			if (m) {
 				console.log(m.pree);
 				setPrestations(m.pree);
 				setLoading(false);
-			} else {
 			}
 		})()
 	}, [update])
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
-		setLoading(true);
+		setUpdate(!update);
 		setTimeout(() => {
 			setRefreshing(false);
-			setLoading(false);
 		}, 250);
 	}, []);
 
@@ -119,10 +119,11 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 				...currentPrestationDetails
 			});
 		} else {
+			console.log(`No network, saving prestation for mission #${mission.id} in storage`);
 			Storage.save({
 				type: "prestations",
 				mission_id: mission.id,
-				prestations: currentPrestationDetails
+				prestation: currentPrestationDetails
 			});
 		}
 		setUpdate(!update);

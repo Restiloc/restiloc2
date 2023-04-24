@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Worker from './Worker';
 
 /**
  * @class - Manage the storage of the app using AsyncStorage
@@ -13,7 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default class Storage {
 
 	private static generateKey(): string {
-		return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		let key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		while (Worker.hydrated.includes(key)) key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		return key;
 	}
 
 	/**
