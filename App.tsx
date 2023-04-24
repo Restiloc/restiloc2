@@ -100,6 +100,7 @@ function App(): JSX.Element {
           </>
         ) : (
           <>
+            {/* @ts-ignore */}
             <Stack.Screen name="planning" component={ Planning } options={{ headerShown: false, animation:'none' }} />
             <Stack.Screen name="missions" component={ Missions } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
             <Stack.Screen name="finishedMissions" component={ FinishedMissions } options={{ headerShown: false, animationTypeForReplace: 'push', animation:'slide_from_right' }} />
