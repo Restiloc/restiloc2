@@ -34,8 +34,10 @@ export default function Login(): JSX.Element {
 		try {
 			let state = await signIn(credentials);
 			if (!state)
+				setServerError(false);
 				setLoginError(true);
 		} catch (e) {
+			setLoginError(false);
 			setServerError(true);
 		}
 	}

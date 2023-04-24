@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native'
+import { StyleSheet, TouchableOpacity, Text, View, Image, Alert } from 'react-native'
 import Colors from 'src/Colors'
 import type { PrestationType } from 'src/Types';
 import Modal from "react-native-modal";
@@ -8,6 +8,8 @@ import { format } from 'src/Constants';
 
 type Props = {
 	prestation: PrestationType;
+	isFinished: boolean;
+	// onDelete: (id: number) => void;
 }
 
 /**
@@ -16,7 +18,7 @@ type Props = {
  * @param prestation - The prestation content.
  * @returns {JSX.Element} Rendered Prestation component.
  */
-export default function Prestation({ prestation }: Props): JSX.Element {
+export default function Prestation({ prestation, isFinished }: Props): JSX.Element {
 
 	const [modalVisible, setModalVisible] = useState(false);
 
@@ -64,18 +66,34 @@ export default function Prestation({ prestation }: Props): JSX.Element {
 			alignSelf: "center",
 		}
 	})
+
+	// const confirm = () => Alert.alert(
+	// 	"Remove prestation",
+	// 	"Are you sure you want to remove this prestation?",
+	// 	[
+	// 		{
+	// 			text: "Cancel",
+	// 			onPress: () => console.log("Cancel Pressed"),
+	// 			style: "cancel"
+	// 		},
+	// 		{
+	// 			text: "Yes!",
+	// 			onPress: () => onDelete(prestation.id),
+	// 			style: "destructive"
+	// 		}
+	// 	],
+	// 	{ cancelable: false }
+	// );
 	
 	return (
-		<TouchableOpacity style={styles.container} onPress={() => { setModalVisible(!modalVisible) }}>
+		<TouchableOpacity
+			// onLongPress={ isFinished ? () => { setModalVisible(!modalVisible) } : confirm }
+			style={styles.container} 
+			onPress={() => { setModalVisible(!modalVisible) }}
+		>
 			<View style={styles.top}>
 				<Text style={styles.text}>{ prestation.label }</Text>
-				{
-					prestation.id ? (
-						<Text style={styles.text}>#{ prestation.id }</Text>
-					) : (
-						<></>
-					)
-				}
+				<Text style={styles.text}>#{ prestation.id ?? "0" }</Text>
 			</View>
 			<Text style={styles.text}>{ format.description(prestation) }</Text>
 			<Modal
@@ -99,6 +117,11 @@ export default function Prestation({ prestation }: Props): JSX.Element {
 						style={styles.image}
 						source={{uri: `data:image/png;base64,${prestation.image}`}}
 					/>
+					{/* {
+						!isFinished ? (
+							<SoftButton title="Supprimer" onPress={confirm} />
+						) : ( <></> )
+					} */}
 					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} />
 				</View>
 			</Modal>
