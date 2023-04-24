@@ -174,12 +174,12 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	// 	return sign.length > 0;
 	// }
 
-	async function onDelete(id: number = 0) {
-		if (id) {
-			await removePrestation(id);
-			setUpdate(!update);
-		}
-	}
+	// async function onDelete(id: number = 0) {
+	// 	if (id) {
+	// 		await removePrestation(id);
+	// 		setUpdate(!update);
+	// 	}
+	// }
 
 	return (
 		<View style={styles.view}>
@@ -204,7 +204,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 												key={index} 
 												prestation={prestation} 
 												isFinished={mission.isFinished} 
-												onDelete={onDelete} 
+												// onDelete={onDelete} 
 											/>
 										))
 									) : (

@@ -9,7 +9,7 @@ import { format } from 'src/Constants';
 type Props = {
 	prestation: PrestationType;
 	isFinished: boolean;
-	onDelete: (id: number) => void;
+	// onDelete: (id: number) => void;
 }
 
 /**
@@ -18,7 +18,7 @@ type Props = {
  * @param prestation - The prestation content.
  * @returns {JSX.Element} Rendered Prestation component.
  */
-export default function Prestation({ prestation, isFinished, onDelete }: Props): JSX.Element {
+export default function Prestation({ prestation, isFinished }: Props): JSX.Element {
 
 	const [modalVisible, setModalVisible] = useState(false);
 
@@ -67,27 +67,27 @@ export default function Prestation({ prestation, isFinished, onDelete }: Props):
 		}
 	})
 
-	const confirm = () => Alert.alert(
-		"Remove prestation",
-		"Are you sure you want to remove this prestation?",
-		[
-			{
-				text: "Cancel",
-				onPress: () => console.log("Cancel Pressed"),
-				style: "cancel"
-			},
-			{
-				text: "Yes!",
-				onPress: () => onDelete(prestation.id),
-				style: "destructive"
-			}
-		],
-		{ cancelable: false }
-	);
+	// const confirm = () => Alert.alert(
+	// 	"Remove prestation",
+	// 	"Are you sure you want to remove this prestation?",
+	// 	[
+	// 		{
+	// 			text: "Cancel",
+	// 			onPress: () => console.log("Cancel Pressed"),
+	// 			style: "cancel"
+	// 		},
+	// 		{
+	// 			text: "Yes!",
+	// 			onPress: () => onDelete(prestation.id),
+	// 			style: "destructive"
+	// 		}
+	// 	],
+	// 	{ cancelable: false }
+	// );
 	
 	return (
 		<TouchableOpacity
-			onLongPress={ isFinished ? () => { setModalVisible(!modalVisible) } : confirm }
+			// onLongPress={ isFinished ? () => { setModalVisible(!modalVisible) } : confirm }
 			style={styles.container} 
 			onPress={() => { setModalVisible(!modalVisible) }}
 		>
@@ -117,11 +117,11 @@ export default function Prestation({ prestation, isFinished, onDelete }: Props):
 						style={styles.image}
 						source={{uri: `data:image/png;base64,${prestation.image}`}}
 					/>
-					{
+					{/* {
 						!isFinished ? (
 							<SoftButton title="Supprimer" onPress={confirm} />
 						) : ( <></> )
-					}
+					} */}
 					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} />
 				</View>
 			</Modal>
