@@ -25,8 +25,8 @@ export async function getFinishedMissions() {
 	return orderById(data);
 }
 
-export async function getMission(endpoint: string) {
-	const response = await Fetch.call(`${endpoint}`)
+export async function getMission(id: number) {
+	const response = await Fetch.call(`/missions/${id}`)
 	if (!response) return false;
 	const data: MissionType = await response.json();
 	return data;

@@ -40,20 +40,20 @@ export default class Worker {
 								break;
 							case "closedMissions":
 								console.log(`A closed mission has been found in the storage. It will be hydrated.`);
-								if (data.prestations && data.prestations.length > 0) {
-									for (let prestation of data.prestations) {
-										await newPrestation({
-											mission_id: data.mission_id,						
-											...prestation
-										});
-									}
-								}
 								await closeMission(data.mission_id.toString(), {
 									signature: data.signature,
 									signedByClient: !data.signedByClient
 								})
 								await Storage.remove(uuid);
 								break;
+							case "prestations":
+								console.log(`A prestation has been found in the storage. It will be hydrated.`);
+								if (data.mission_id) {
+									await newPrestation({
+										mission_id: data.mission_id,						
+										...data.prestations
+									});
+								}
 						}
 					}
 				}

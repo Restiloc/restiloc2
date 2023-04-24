@@ -9,8 +9,8 @@ import Button from "src/components/Button";
 import Prestation from "src/components/Prestation";
 import Modal from "react-native-modal";
 // import * as ImagePicker from "react-native-image-picker";
-import { newPrestation } from "src/services/api/Prestations";
-import { closeMission } from "src/services/api/Missions";
+import { newPrestation, removePrestation } from "src/services/api/Prestations";
+import { closeMission, getMission } from "src/services/api/Missions";
 import Network from "src/services/Network";
 import Storage from "src/services/Storage";
 import { format } from "src/Constants";
@@ -45,6 +45,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const [currentPrestationDetails, setCurrentPrestationDetails] = useState<PrestationType>({} as PrestationType);
 	// const [showImage, setShowImage] = useState(false);
 	const [error, setError] = useState(false);
+	let [update, setUpdate] = useState(true);
 
 	// let bouncyCheckboxRef: BouncyCheckbox | null = null;
 	// const [sign, setSign] = useState<String>("");
@@ -53,10 +54,18 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const { mission } = route.params;
 
 	useEffect(() => {
+		setLoading(true);
 		(async () => {
-			setLoading(false);
+			console.log(`Update called => ${update}`)
+			let m: MissionType|boolean = await getMission(mission.id);
+			if (m) {
+				console.log(m.pree);
+				setPrestations(m.pree);
+				setLoading(false);
+			} else {
+			}
 		})()
-	}, [])
+	}, [update])
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
@@ -98,12 +107,25 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		setModalVisible(!modalVisible);
 	}
 
-	function submit () {
+	async function submit () {
 		if (!currentPrestationDetails.label || !currentPrestationDetails.description) {
 			setError(true);
 			return;
 		}
-		setPrestations([...prestations, currentPrestationDetails]);
+		let network = await Network.isOk();
+		if (network) {
+			await newPrestation({
+				mission_id: mission.id,						
+				...currentPrestationDetails
+			});
+		} else {
+			Storage.save({
+				type: "prestations",
+				mission_id: mission.id,
+				prestations: currentPrestationDetails
+			});
+		}
+		setUpdate(!update);
 		reset();
 	}
 
@@ -115,16 +137,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		// }
 		(async () => {
 			let network = await Network.isOk();
-			console.log(network)
 			if (network) {
-				if (prestations.length > 0) {
-					for (let prestation of prestations) {
-						await newPrestation({
-							mission_id: mission.id,						
-							...prestation
-						});
-					}
-				}
 				await closeMission(mission.id.toString(), {
 					// signature: sign,
 					// signedByClient: !expertSign
@@ -133,7 +146,6 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 				Storage.save({
 					type: "closedMissions",
 					mission_id: mission.id,
-					prestations: prestations,
 					// signature: sign,
 					// signedByClient: !expertSign
 				});
@@ -162,6 +174,13 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	// 	return sign.length > 0;
 	// }
 
+	async function onDelete(id: number = 0) {
+		if (id) {
+			await removePrestation(id);
+			setUpdate(!update);
+		}
+	}
+
 	return (
 		<View style={styles.view}>
 			<Header />
@@ -173,26 +192,24 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					<Text style={styles.text}>{format.hourly(mission)}</Text>
 				</View>
 				<View>
-					{ loading ? ( 
+					{ loading ? (
 							<ActivityIndicator size="large" color={Colors.Secondary} />
 						) : (
 							<View style={styles.prestations}>
 								<Text style={styles.title}>Prestations de service</Text>
 								{
-									mission.pree.length <= 0 && prestations.length <= 0 ? (
-										<Text style={[styles.text, styles.details]}>Aucune prestation de service n'a été saisie.</Text>
-									) : (
-										mission.pree.map((prestation, index) => (
-											<Prestation key={index} prestation={prestation} />
-										))
-									)
-								}
-								{
 									prestations.length > 0 ? (
-											prestations.map((prestation, index) => (
-												<Prestation key={index} prestation={prestation} />
-											))
-										) : (<></>)
+										prestations.map((prestation, index) => (
+											<Prestation 
+												key={index} 
+												prestation={prestation} 
+												isFinished={mission.isFinished} 
+												onDelete={onDelete} 
+											/>
+										))
+									) : (
+										<Text style={[styles.text, styles.details]}>Aucune prestation de service n'a été saisie.</Text>
+									)
 								}
 							</View>
 						) 
@@ -203,16 +220,16 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 						<></>
 					) : (
 						<>
-							<SoftButton title="Ajouter une prestation" onPress={showModal} css={{marginTop: 20}}/>
+							<SoftButton title="Ajouter une prestation" onPress={showModal} css={{ marginTop: 20 }}/>
 							<View style={styles.container}>
-								<Button title="Clôturer l'expertise" onPress={showCloseModal} />
+								<Button title="Clôturer la mission" onPress={showCloseModal} />
 							</View>
 						</>
 					)
 				}
 			</ScrollView>
 			<Modal 
-					isVisible={modalVisible} 
+					isVisible={modalVisible}
 					onBackdropPress={showModal}
 					onBackButtonPress={showModal}
 					style={{ height: 300 }}
@@ -245,7 +262,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 							)
 						} */}
 					</View>
-					<SoftButton title="Ajouter une prestation" onPress={submit} css={{marginTop: 2}}/>
+					<SoftButton title="Créer la prestation" onPress={submit} css={{marginTop: 2}}/>
 					<SoftButton title="Annuler" onPress={showModal} css={{marginTop: 2}}/>
 				</View>
 			</Modal>

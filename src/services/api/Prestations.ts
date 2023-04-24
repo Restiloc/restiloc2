@@ -9,3 +9,9 @@ export async function newPrestation(body: {}) {
 	const data: [] = await response.json();
 	return data;
 }
+
+export async function removePrestation(id: number) {
+	const response = await Fetch.call(`/pree/${id}`, Methods.DELETE)
+	if (!response) return false;
+	return true;
+}
