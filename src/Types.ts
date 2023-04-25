@@ -156,6 +156,7 @@ export type PrestationType = {
 }
 
 export type NewPrestationType = {
+	mission_id: number,
 	label: string,
 	description: string,
 	image: string,
@@ -174,4 +175,10 @@ export type Hydrate = {
 export type ClosedMissionType = {
 	state: boolean,
 	id: number
+}
+
+export type PrestationEditType = {
+	label?: string,
+	description?: string,
+	image?: string,
 }

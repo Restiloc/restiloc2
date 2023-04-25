@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image, Alert } from 'react-native'
+import { StyleSheet, TouchableOpacity, Text, View, Image, Alert, TextInput } from 'react-native'
 import Colors from 'src/Colors'
-import type { PrestationType } from 'src/Types';
+import type { PrestationEditType, PrestationType } from 'src/Types';
 import Modal from "react-native-modal";
 import SoftButton from './SoftButton';
 import { format } from 'src/Constants';
@@ -10,6 +10,7 @@ type Props = {
 	prestation: PrestationType;
 	isFinished: boolean;
 	// onDelete: (id: number) => void;
+	// onEdit: (id: number, body: PrestationEditType) => Promise<void>;
 }
 
 /**
@@ -18,9 +19,19 @@ type Props = {
  * @param prestation - The prestation content.
  * @returns {JSX.Element} Rendered Prestation component.
  */
-export default function Prestation({ prestation, isFinished }: Props): JSX.Element {
+export default function Prestation({ 
+	prestation, 
+	isFinished,
+	// onDelete,
+	// onEdit
+}: Props): JSX.Element {
 
 	const [modalVisible, setModalVisible] = useState(false);
+	// const [editstatus, setEditStatus] = useState(false);
+	// const [prestationDetails, setPrestationDetails] = useState({
+	// 	label: prestation.label,
+	// 	description: prestation.description,
+	// });
 
 	const styles = StyleSheet.create({
 		container: {
@@ -43,6 +54,8 @@ export default function Prestation({ prestation, isFinished }: Props): JSX.Eleme
 			backgroundColor: Colors.Primary,
 			padding: 20,
 			borderRadius: 10,
+			maxHeight: 550, // upgrade to 600/650 if add delete/edit buttons
+			height: "100%",
 		},
 		label: {
 			color: Colors.Details,
@@ -67,7 +80,7 @@ export default function Prestation({ prestation, isFinished }: Props): JSX.Eleme
 		}
 	})
 
-	// const confirm = () => Alert.alert(
+	// const confirmDelete = () => Alert.alert(
 	// 	"Remove prestation",
 	// 	"Are you sure you want to remove this prestation?",
 	// 	[
@@ -82,8 +95,52 @@ export default function Prestation({ prestation, isFinished }: Props): JSX.Eleme
 	// 			style: "destructive"
 	// 		}
 	// 	],
-	// 	{ cancelable: false }
+	// 	{ cancelable: true }
 	// );
+
+	// const confirmEdit = () => Alert.alert(
+	// 	"Edit prestation",
+	// 	"Are you sure you want to edit this prestation?",
+	// 	[
+	// 		{
+	// 			text: "Cancel",
+	// 			onPress: () => console.log("Cancel Pressed"),
+	// 			style: "cancel"
+	// 		},
+	// 		{
+	// 			text: "Yes!",
+	// 			onPress: () => onEdit(prestation.id, prestationDetails),
+	// 			style: "destructive"
+	// 		}
+	// 	],
+	// 	{ cancelable: true }
+	// );
+
+	// const saveChanges = (key: string, value: string) => {
+	// 	switch (key) {
+	// 		case "label":
+	// 			setPrestationDetails({
+	// 				...prestationDetails,
+	// 				label: value
+	// 			});
+	// 			break;
+	// 		case "description":
+	// 			setPrestationDetails({
+	// 				...prestationDetails,
+	// 				description: value
+	// 			});
+	// 			break;
+	// 	}
+
+	// 	if (
+	// 		(prestationDetails.label !== prestation.label || prestationDetails.description !== prestation.description)
+	// 		&& (prestationDetails.label !== "" && prestationDetails.description !== "")
+	// 	) {
+	// 		setEditStatus(true);
+	// 	} else {
+	// 		setEditStatus(false);
+	// 	}
+	// }
 	
 	return (
 		<TouchableOpacity
@@ -103,23 +160,58 @@ export default function Prestation({ prestation, isFinished }: Props): JSX.Eleme
 			>
 				<View style={styles.modal}>
 					<View style={styles.top}>
-						<Text style={styles.label}>{prestation.label}</Text>
 						{
-							prestation.id ? (
-								<Text style={styles.text}>#{ prestation.id }</Text>
+							isFinished ? (
+								<>
+									<Text style={styles.label}>{prestation.label}</Text>
+									{
+										prestation.id ? (
+											<Text style={styles.text}>#{ prestation.id }</Text>
+										) : (
+											<></>
+										)
+									}
+								</>
 							) : (
+								// <TextInput style={styles.label} value={prestationDetails.label} onChangeText={(text) => saveChanges("label", text)} />
 								<></>
 							)
 						}
 					</View>
-					<Text style={styles.description}>{prestation.description}</Text>
+					{
+						isFinished ? (
+							<Text style={styles.description}>{prestation.description}</Text>
+						)	: (
+							// <TextInput style={styles.description} value={prestationDetails.description} onChangeText={(text) => saveChanges("description", text)} />
+							<></>
+						)
+					}
 					<Image
 						style={styles.image}
 						source={{uri: `data:image/png;base64,${prestation.image}`}}
 					/>
 					{/* {
 						!isFinished ? (
-							<SoftButton title="Supprimer" onPress={confirm} />
+							<View style={{
+								flexDirection: "row",
+							}}>
+								<SoftButton
+									title="Supprimer"
+									onPress={confirmDelete}
+									css={{
+										width: 150
+									}}
+								/>
+								<SoftButton 
+									title="Editer"
+									onPress={ !editstatus ? () => {} : confirmEdit }
+									css={{
+										width: 150,
+										marginLeft: 6
+									}} 
+									disabled={!editstatus} 
+								/>
+							</View>
 						) : ( <></> )
 					} */}
 					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} />

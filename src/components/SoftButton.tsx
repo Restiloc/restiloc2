@@ -13,6 +13,8 @@ type Props = {
  * 
  * @param title - The title of the button.
  * @param onPress - The onPress event of the button.
+ * @param css - The custom css of the button.
+ * @param disabled - The disabled state of the button.
  * @returns {JSX.Element} Rendered button.
  */
 export default function SoftButton({ title, onPress, css, disabled = false }: Props): JSX.Element {

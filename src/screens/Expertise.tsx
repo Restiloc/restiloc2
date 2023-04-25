@@ -2,14 +2,14 @@ import { Alert, Dimensions, View, StyleSheet, ScrollView, Text, ActivityIndicato
 import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
-import type { MissionType, PrestationType } from "src/Types";
+import type { MissionType, PrestationEditType, PrestationType } from "src/Types";
 import { useCallback, useEffect, useState, useRef } from "react";
 import SoftButton from "src/components/SoftButton";
 import Button from "src/components/Button";
 import Prestation from "src/components/Prestation";
 import Modal from "react-native-modal";
 // import * as ImagePicker from "react-native-image-picker";
-import { newPrestation, removePrestation } from "src/services/api/Prestations";
+import { editPrestation, newPrestation, removePrestation } from "src/services/api/Prestations";
 import { closeMission, getMission } from "src/services/api/Missions";
 import Network from "src/services/Network";
 import Storage from "src/services/Storage";
@@ -182,6 +182,13 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	// 	}
 	// }
 
+	// async function onEdit(id: number, body: PrestationEditType) {
+	// 	if (id) {
+	// 		await editPrestation(id, body);
+	// 		setUpdate(!update);
+	// 	}
+	// }
+
 	return (
 		<View style={styles.view}>
 			<Header />
@@ -206,6 +213,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 												prestation={prestation} 
 												isFinished={mission.isFinished} 
 												// onDelete={onDelete} 
+												// onEdit={onEdit}
 											/>
 										))
 									) : (
