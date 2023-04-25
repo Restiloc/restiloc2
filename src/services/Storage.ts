@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Worker from './Worker';
+import { Worker } from './Worker';
 
 /**
  * @class - Manage the storage of the app using AsyncStorage

@@ -1,8 +1,9 @@
 import NetInfo from '@react-native-community/netinfo';
-import Worker from './Worker';
+import { Worker } from './Worker';
 
 /**
  * @class - Observer methods
+ * @static networkState - Network state
  * @method networkObserver - Observe network changes
  */
 export default class Observer {

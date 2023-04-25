@@ -6,9 +6,10 @@ import { closeMission, sendUnavailability } from "./api/Missions";
 
 /**
  * @class Worker - Worker methods for background tasks
+ * @static hydrated - Array of already hydrated uuids
  * @method hydrate - Hydrate database from Storage
  */
-export default class Worker {
+export class Worker {
 	
 	public static hydrated: string[] = [];
 
@@ -24,8 +25,8 @@ export default class Worker {
 			if (items && items.length > 0) {
 				for (const item of items) {
 					let uuid = item[0];
-					if (uuid === "token" || Worker.hydrated.includes(uuid)) return;
-					Worker.hydrated.push(uuid);
+					if (uuid === "token" || this.hydrated.includes(uuid)) return;
+					this.hydrated.push(uuid);
 					let data: Hydrate = JSON.parse(item[1]);
 					switch (data.type) {
 						case "unavailability":
