@@ -14,6 +14,10 @@ import { closeMission, getMission } from "src/services/api/Missions";
 import Network from "src/services/Network";
 import Storage from "src/services/Storage";
 import { format } from "src/Constants";
+import DropdownSelect from "react-native-input-select";
+import { getStatus } from "src/services/api/Status";
+import { State } from "react-native-webview/lib/WebViewTypes";
+import { editVehicle } from "src/services/api/Vehicles";
 // import Signature from "react-native-signature-canvas";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -42,6 +46,8 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const [prestations, setPrestations] = useState<PrestationType[]>([]);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [closeModalVisible, setCloseModalVisible] = useState(false);
+	const [statuses, setStatuses] = useState<State[]>([]);
+	const [selectedStatus, setSelectedStatus] = useState<string>("");
 	const [currentPrestationDetails, setCurrentPrestationDetails] = useState<PrestationType>({} as PrestationType);
 	// const [showImage, setShowImage] = useState(false);
 	const [error, setError] = useState(false);
@@ -60,6 +66,10 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 			if (!network) return;
 			console.log(`Update called => ${update}`)
 			let m: MissionType|boolean = await getMission(mission.id);
+			let status = await getStatus();
+			if (status) {
+				setStatuses(status);
+			}
 			if (m) {
 				console.log(m.pree);
 				setPrestations(m.pree);
@@ -139,10 +149,18 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		(async () => {
 			let network = await Network.isOk();
 			if (network) {
-				await closeMission(mission.id.toString(), {
-					// signature: sign,
-					// signedByClient: !expertSign
-				});
+				if (selectedStatus === "") {
+					Alert.alert("Attention!", "Veuillez sélectionner un statut.");
+					return;
+				} else {
+					await editVehicle(mission.vehicle.id, {
+						vehicle_state_id: selectedStatus
+					})
+					await closeMission(mission.id.toString(), {
+						// signature: sign,
+						// signedByClient: !expertSign,
+					});
+				}
 			} else {
 				Storage.save({
 					type: "closedMissions",
@@ -230,6 +248,27 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					) : (
 						<>
 							<SoftButton title="Ajouter une prestation" onPress={showModal} css={{ marginTop: 20 }}/>
+							
+							<View style={{
+								marginTop: 40,
+								alignItems: "center",
+							}}>
+								<Text style={styles.title}>État du véhicule</Text>
+									<DropdownSelect
+										isMultiple={false}
+										isSearchable={false}
+										dropdownContainerStyle={{ width: 300 }}
+										checkboxLabelStyle={{ color: "black" }}
+										placeholder="Sélectionnez un motif"
+										options={statuses}
+										optionLabel={'label'}
+										optionValue={'id'}
+										onValueChange={(text: string) => { setSelectedStatus(text) }}
+										primaryColor={'green'}
+									/>
+							</View>
+							
+							
 							<View style={styles.container}>
 								<Button title="Clôturer la mission" onPress={showCloseModal} />
 							</View>

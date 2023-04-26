@@ -46,9 +46,37 @@ export type Vehicle = {
 	licencePlate: string,
 	color: string,
 	releaseYear: number,
+	assurance: Assurance,
+	state: State,
 	route: string,
 	model: Model,
 	missions: MissionType[],
+}
+
+type State = {
+	id: number,
+	label: string,
+}
+
+type Assurance = {
+	company: Company,
+	contractNumber: string,
+	guaranteeLevel: Guarantee,
+	endDate: string,
+}
+
+type Company = {
+	id: number,
+	name: string,
+	address: string,
+	postalCode: string,
+	city: string,
+	phoneNumber: string,
+}
+
+type Guarantee = {
+	id: number,
+	label: string,
 }
 
 /**

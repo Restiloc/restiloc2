@@ -1,4 +1,4 @@
-import { Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity, Dimensions, View } from 'react-native'
 import Colors from 'src/Colors';
 import { MissionType } from 'src/Types';
 import { format } from 'src/Constants';
@@ -20,6 +20,18 @@ export type Props = {
 export default function Mission({ navigation, mission }: Props): JSX.Element {
 
 	const styles = StyleSheet.create({
+		top: {
+			flex: 1,
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "space-evenly",
+		},
+		bot: {
+			flex: 1,
+			alignItems: "center",
+			justifyContent: "center",
+			marginRight: 5
+		},
 		color: {
 			color: "black"
 		},
@@ -31,9 +43,10 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 			borderColor: Colors.Details,
 			borderWidth: 1,
 			flex: 1,
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "space-evenly",
+			flexDirection: "column",
+		},
+		company: {
+			fontSize: 14
 		}
 	})
 
@@ -69,8 +82,18 @@ export default function Mission({ navigation, mission }: Props): JSX.Element {
 
 	return (
 		<TouchableOpacity onPress={toMission} style={styles.card}>
-			<Text style={styles.color}>Mission #{mission.id}</Text>
-			<Text style={styles.color}>{format.hourly(mission)}</Text>
+			<View style={styles.top}>
+				<Text style={styles.color}>Mission #{mission.id}</Text>
+				<Text style={styles.color}>{format.hourly(mission)}</Text>
+			</View>
+			<View style={styles.bot}>
+				<Text style={[
+					styles.color,
+					styles.company
+				]}>
+					Assuré par : {format.onlyCompanyName(mission.vehicle.assurance.company.name)}
+				</Text>
+			</View>
 		</TouchableOpacity>
 	)
 }

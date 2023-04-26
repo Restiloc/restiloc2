@@ -51,6 +51,7 @@ export default function History({ navigation, route }: Props): JSX.Element {
 								<Text style={[styles.text]}>Modèle du véhicule   :</Text>
 								<Text style={[styles.text]}>Couleur du véhicule  :</Text>
 								<Text style={[styles.text]}>Mise en circulation    :</Text>
+								<Text style={[styles.text]}>État du véhicule          :</Text>
 							</View>
 							<View style={styles.column}>
 								<Text style={[styles.text]}>{format.licencePlate(vehicle)}</Text>
@@ -58,6 +59,7 @@ export default function History({ navigation, route }: Props): JSX.Element {
 								<Text style={[styles.text]}>{vehicle?.model?.label}</Text>
 								<Text style={[styles.text]}>{vehicle?.color}</Text>
 								<Text style={[styles.text]}>{vehicle?.releaseYear}</Text>
+								<Text style={[styles.text]}>{vehicle?.state.label}</Text>
 							</View>
 						</View>
 						<Text style={styles.title}>Expertises réalisées</Text>
@@ -70,6 +72,34 @@ export default function History({ navigation, route }: Props): JSX.Element {
 								</View>
 								: <Text style={styles.void}>Aucune expertise n'a été réalisée.</Text>
 						}
+						<Text style={styles.title}>Assurance du véhicule</Text>
+
+						<Text style={{
+							fontSize: 16,
+							color: Colors.Details,
+							marginTop: 25,
+							fontWeight: "bold",
+							textAlign: "center",
+						}}>
+							{ format.companyAddress(vehicle) }
+						</Text>
+						
+						<View style={styles.details}>
+							<View style={styles.column}>
+								<Text style={[styles.text]}>Nom compagnie        :</Text>
+								<Text style={[styles.text]}>Numéro de contrat    :</Text>
+								<Text style={[styles.text]}>Fin de validité             :</Text>
+								<Text style={[styles.text]}>Niveau d'assurance   :</Text>
+								<Text style={[styles.text]}>Numéro de tel.           :</Text>
+							</View>
+							<View style={styles.column}>
+								<Text style={[styles.text]}>{vehicle?.assurance.company.name}</Text>
+								<Text style={[styles.text]}>{vehicle?.assurance.contractNumber}</Text>
+								<Text style={[styles.text]}>{format.date(vehicle?.assurance.endDate ?? "")}</Text>
+								<Text style={[styles.text]}>{vehicle?.assurance.guaranteeLevel.label}</Text>
+								<Text style={[styles.text]}>{vehicle?.assurance.company.phoneNumber}</Text>
+							</View>
+						</View>
 					</ScrollView>
 					<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => { navigation.goBack() }} />
 				</>
