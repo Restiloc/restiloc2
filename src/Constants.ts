@@ -1,6 +1,6 @@
 import { Client, ClosedMissionType, Garage, MissionType, PrestationType, Vehicle } from "./Types";
 
-export const __DOMAIN__ = 'http://alexis.restiloc.space/api';
+export const __DOMAIN__ = 'https://restiloc.space/api';
 
 export const format = {
 	date: (date: string) => {
