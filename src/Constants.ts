@@ -1,8 +1,29 @@
 import { Client, ClosedMissionType, Garage, MissionType, PrestationType, Vehicle } from "./Types";
 
-export const __DOMAIN__ = 'https://restiloc.space/api';
+export const __DOMAIN__ = 'http://alexis.restiloc.space/api';
 
 export const format = {
+	date: (date: string) => {
+		let d = date.split(" ")[0];
+		return d.split("-").reverse().join("/")
+	},
+	companyAddress: (vehicle?: Vehicle) => {
+		if (!vehicle) {
+			return "Adresse inconnue";
+		} else {
+			let a = vehicle.assurance.company.address;
+			if (vehicle.assurance.company.postalCode !== "") {
+				a += ", " + vehicle.assurance.company.postalCode;
+			}
+			if (vehicle.assurance.company.city !== "") {
+				a += " - " + vehicle.assurance.company.city;
+			}
+			return a;
+		}
+	},
+	onlyCompanyName: (str: string) => {
+		return str.split(' ')[0];
+	},
 	address: (isClient: boolean, mission?: MissionType) => {
 		let type: Garage | Client | undefined = isClient ? mission?.client : mission?.garage;
 		if (type === undefined) return "Adresse inconnue";

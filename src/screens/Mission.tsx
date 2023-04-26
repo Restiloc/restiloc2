@@ -92,7 +92,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 		});
 	}
 
-	function toHistory() {
+	function toDetails() {
 		navigation.navigate("history", {
 			endpoint: mission?.vehicle.route,
 			vehicle: mission?.vehicle
@@ -160,6 +160,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 											<Text style={[styles.text]}>Modèle du véhicule   :</Text>
 											<Text style={[styles.text]}>Couleur du véhicule  :</Text>
 											<Text style={[styles.text]}>Kilomètres réalisés   :</Text>
+											<Text style={[styles.text]}>État du véhicule         :</Text>
 										</View>
 										<View style={styles.column}>
 											<Text style={[styles.text]}>{isClient ? "Client" : "Garage"}</Text>
@@ -168,6 +169,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 											<Text style={[styles.text]}>{mission?.vehicle.model.label}</Text>
 											<Text style={[styles.text]}>{mission?.vehicle.color}</Text>
 											<Text style={[styles.text]}>{mission?.kilometersCounter}</Text>
+											<Text style={[styles.text]}>{mission?.vehicle.state.label}</Text>
 										</View>
 									</View>
 									{/* <View style={styles.map}>
@@ -210,8 +212,8 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 										)
 									}
 									<SoftButton 
-										title="Historique du véhicule" 
-										onPress={toHistory} 
+										title="Informations du véhicule" 
+										onPress={toDetails} 
 										css={{ marginTop: mission?.isFinished ? ( mission.unavailability ? 40 : -15 ) : 5 }}
 									/>
 								</>
