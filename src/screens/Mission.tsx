@@ -9,8 +9,8 @@ import Colors from "src/Colors";
 import Button from "src/components/Button";
 import SoftButton from "src/components/SoftButton";
 import { format } from "src/Constants";
-// import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-// import Modal from "react-native-modal";
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import Modal from "react-native-modal";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,11 +21,11 @@ type Props = {
 			id: string;
 			route: string;
 			mission: MissionType;
-			// coordinates: {
-			// 	latitude: number;
-			// 	longitude: number;
-			// 	title: string;
-			// };
+			coordinates: {
+				latitude: number;
+				longitude: number;
+				title: string;
+			};
 		}
 	};
 }
@@ -43,9 +43,9 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 	const [isClient, setIsClient] = useState(false);
 	const [mission, setMission] = useState<MissionType>();
 	const [refreshing, setRefreshing] = useState(false);
-	// const [showSign, setShowSign] = useState(false);
+	const [showSign, setShowSign] = useState(false);
 	const endpoint = route.params.route;
-	// const coordinates = route.params.coordinates;
+	const coordinates = route.params.coordinates;
 
 	// @ts-ignore
 	const { signOut } = useContext(AuthContext);
@@ -139,7 +139,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 												) : (
 													<View style={styles.finished}>
 														<Text style={styles.important}>Mission terminée</Text>
-														{/* <Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ mission.signedByClient ? "'expert" : "e client" }</Text> */}
+														<Text style={{textAlign: "center", marginTop: 4}}>Signée par l{ !mission.signedByClient ? "'expert" : "e client" }</Text>
 													</View>
 												)
 											) : (
@@ -147,11 +147,11 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 											)
 										}
 									</View>
-									{/* {
+									{
 										mission?.isFinished ? (
 											<SoftButton title="Voir la signature" onPress={() => { setShowSign(!showSign) }} css={{ marginTop: 0}} />
 										) : (<></>)
-									} */}
+									}
 									<View style={styles.details}>
 										<View style={styles.column}>
 											<Text style={[styles.text]}>Type de rendez-vous :</Text>
@@ -172,7 +172,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 											<Text style={[styles.text]}>{mission?.vehicle.state.label}</Text>
 										</View>
 									</View>
-									{/* <View style={styles.map}>
+									<View style={styles.map}>
 										{
 											loading ? <ActivityIndicator size="large" color={Colors.Secondary} /> : (
 												<MapView
@@ -191,7 +191,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 												</MapView>
 											)
 										}
-									</View> */}
+									</View>
 									{
 										mission?.isFinished ? (
 											<>
@@ -220,7 +220,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 							)
 						}
 					</ScrollView>
-					{/* <Modal 
+					<Modal 
 						isVisible={showSign} 
 						onBackdropPress={() => { setShowSign(!showSign) }}
 						onBackButtonPress={() => { setShowSign(!showSign) }}
@@ -231,7 +231,7 @@ export default function Mission({ navigation, route }: Props): JSX.Element {
 							<Image source={{ uri: `data:image/png;base64,${mission?.signature}` }} style={{ width: 300, height: 300 }} />
 							<SoftButton title="Fermer" onPress={() => { setShowSign(!showSign) }} />
 						</View>
-					</Modal> */}
+					</Modal>
 					<Arrow direction={Directions.Left} position={Positions.Left} onPress={() => { navigation.goBack() }} />
 				</>
 			)}

@@ -9,8 +9,8 @@ import { format } from 'src/Constants';
 type Props = {
 	prestation: PrestationType;
 	isFinished: boolean;
-	// onDelete: (id: number) => void;
-	// onEdit: (id: number, body: PrestationEditType) => Promise<void>;
+	onDelete: (id: number) => void;
+	onEdit: (id: number, body: PrestationEditType) => Promise<void>;
 }
 
 /**
@@ -22,16 +22,16 @@ type Props = {
 export default function Prestation({ 
 	prestation, 
 	isFinished,
-	// onDelete,
-	// onEdit
+	onDelete,
+	onEdit
 }: Props): JSX.Element {
 
 	const [modalVisible, setModalVisible] = useState(false);
-	// const [editstatus, setEditStatus] = useState(false);
-	// const [prestationDetails, setPrestationDetails] = useState({
-	// 	label: prestation.label,
-	// 	description: prestation.description,
-	// });
+	const [editstatus, setEditStatus] = useState(false);
+	const [prestationDetails, setPrestationDetails] = useState({
+		label: prestation.label,
+		description: prestation.description,
+	});
 
 	const styles = StyleSheet.create({
 		container: {
@@ -54,7 +54,7 @@ export default function Prestation({
 			backgroundColor: Colors.Primary,
 			padding: 20,
 			borderRadius: 10,
-			maxHeight: 550, // upgrade to 600/650 if add delete/edit buttons
+			maxHeight: isFinished ? 500 : 650,
 			height: "100%",
 		},
 		label: {
@@ -80,71 +80,71 @@ export default function Prestation({
 		}
 	})
 
-	// const confirmDelete = () => Alert.alert(
-	// 	"Remove prestation",
-	// 	"Are you sure you want to remove this prestation?",
-	// 	[
-	// 		{
-	// 			text: "Cancel",
-	// 			onPress: () => console.log("Cancel Pressed"),
-	// 			style: "cancel"
-	// 		},
-	// 		{
-	// 			text: "Yes!",
-	// 			onPress: () => onDelete(prestation.id),
-	// 			style: "destructive"
-	// 		}
-	// 	],
-	// 	{ cancelable: true }
-	// );
+	const confirmDelete = () => Alert.alert(
+		"Remove prestation",
+		"Are you sure you want to remove this prestation?",
+		[
+			{
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			},
+			{
+				text: "Yes!",
+				onPress: () => onDelete(prestation.id),
+				style: "destructive"
+			}
+		],
+		{ cancelable: true }
+	);
 
-	// const confirmEdit = () => Alert.alert(
-	// 	"Edit prestation",
-	// 	"Are you sure you want to edit this prestation?",
-	// 	[
-	// 		{
-	// 			text: "Cancel",
-	// 			onPress: () => console.log("Cancel Pressed"),
-	// 			style: "cancel"
-	// 		},
-	// 		{
-	// 			text: "Yes!",
-	// 			onPress: () => onEdit(prestation.id, prestationDetails),
-	// 			style: "destructive"
-	// 		}
-	// 	],
-	// 	{ cancelable: true }
-	// );
+	const confirmEdit = () => Alert.alert(
+		"Edit prestation",
+		"Are you sure you want to edit this prestation?",
+		[
+			{
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			},
+			{
+				text: "Yes!",
+				onPress: () => onEdit(prestation.id, prestationDetails),
+				style: "destructive"
+			}
+		],
+		{ cancelable: true }
+	);
 
-	// const saveChanges = (key: string, value: string) => {
-	// 	switch (key) {
-	// 		case "label":
-	// 			setPrestationDetails({
-	// 				...prestationDetails,
-	// 				label: value
-	// 			});
-	// 			break;
-	// 		case "description":
-	// 			setPrestationDetails({
-	// 				...prestationDetails,
-	// 				description: value
-	// 			});
-	// 			break;
-	// 	}
+	const saveChanges = (key: string, value: string) => {
+		switch (key) {
+			case "label":
+				setPrestationDetails({
+					...prestationDetails,
+					label: value
+				});
+				break;
+			case "description":
+				setPrestationDetails({
+					...prestationDetails,
+					description: value
+				});
+				break;
+		}
 
-	// 	if (
-	// 		(prestationDetails.label !== prestation.label || prestationDetails.description !== prestation.description)
-	// 		&& (prestationDetails.label !== "" && prestationDetails.description !== "")
-	// 	) {
-	// 		setEditStatus(true);
-	// 	} else {
-	// 		setEditStatus(false);
-	// 	}
-	// }
+		if (
+			(prestationDetails.label !== prestation.label || prestationDetails.description !== prestation.description)
+			&& (prestationDetails.label !== "" && prestationDetails.description !== "")
+		) {
+			setEditStatus(true);
+		} else {
+			setEditStatus(false);
+		}
+	}
 	
 	return (
 		<TouchableOpacity
-			// onLongPress={ isFinished ? () => { setModalVisible(!modalVisible) } : confirm }
+			onLongPress={ isFinished ? () => { setModalVisible(!modalVisible) } : confirmDelete }
 			style={styles.container} 
 			onPress={() => { setModalVisible(!modalVisible) }}
 		>
@@ -173,8 +173,7 @@ export default function Prestation({
 									}
 								</>
 							) : (
-								// <TextInput style={styles.label} value={prestationDetails.label} onChangeText={(text) => saveChanges("label", text)} />
-								<></>
+								<TextInput style={styles.label} value={prestationDetails.label} onChangeText={(text) => saveChanges("label", text)} />
 							)
 						}
 					</View>
@@ -182,15 +181,14 @@ export default function Prestation({
 						isFinished ? (
 							<Text style={styles.description}>{prestation.description}</Text>
 						)	: (
-							// <TextInput style={styles.description} value={prestationDetails.description} onChangeText={(text) => saveChanges("description", text)} />
-							<></>
+							<TextInput style={styles.description} value={prestationDetails.description} onChangeText={(text) => saveChanges("description", text)} />
 						)
 					}
 					<Image
 						style={styles.image}
 						source={{uri: `data:image/png;base64,${prestation.image}`}}
 					/>
-					{/* {
+					{
 						!isFinished ? (
 							<View style={{
 								flexDirection: "row",
@@ -213,7 +211,7 @@ export default function Prestation({
 								/>
 							</View>
 						) : ( <></> )
-					} */}
+					}
 					<SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} />
 				</View>
 			</Modal>

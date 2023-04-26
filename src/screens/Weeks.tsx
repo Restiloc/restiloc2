@@ -2,7 +2,6 @@ import { Dimensions, View, ScrollView, StyleSheet, Text } from "react-native";
 import Colors from "src/Colors";
 import Header from "src/components/Header";
 import Arrow, { Directions, Positions } from "src/components/Arrow";
-import { useState } from "react";
 import WeekPreview from "src/components/WeekPreview";
 
 type Props = {
@@ -23,8 +22,6 @@ type Props = {
  * @returns {JSX.Element} Rendered statistics page.
  */
 export default function Weeks({ navigation, route }: Props): JSX.Element {
-
-	const [loading, setLoading] = useState(true);
 
 	const { year, weeks } = route.params;
 

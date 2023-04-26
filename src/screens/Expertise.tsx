@@ -8,7 +8,7 @@ import SoftButton from "src/components/SoftButton";
 import Button from "src/components/Button";
 import Prestation from "src/components/Prestation";
 import Modal from "react-native-modal";
-// import * as ImagePicker from "react-native-image-picker";
+import * as ImagePicker from "react-native-image-picker";
 import { editPrestation, newPrestation, removePrestation } from "src/services/api/Prestations";
 import { closeMission, getMission } from "src/services/api/Missions";
 import Network from "src/services/Network";
@@ -18,8 +18,8 @@ import DropdownSelect from "react-native-input-select";
 import { getStatus } from "src/services/api/Status";
 import { State } from "react-native-webview/lib/WebViewTypes";
 import { editVehicle } from "src/services/api/Vehicles";
-// import Signature from "react-native-signature-canvas";
-// import BouncyCheckbox from "react-native-bouncy-checkbox";
+import Signature from "react-native-signature-canvas";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const { height } = Dimensions.get("window");	
 	
@@ -49,13 +49,13 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	const [statuses, setStatuses] = useState<State[]>([]);
 	const [selectedStatus, setSelectedStatus] = useState<string>("");
 	const [currentPrestationDetails, setCurrentPrestationDetails] = useState<PrestationType>({} as PrestationType);
-	// const [showImage, setShowImage] = useState(false);
+	const [showImage, setShowImage] = useState(false);
 	const [error, setError] = useState(false);
 	let [update, setUpdate] = useState(true);
 
-	// let bouncyCheckboxRef: BouncyCheckbox | null = null;
-	// const [sign, setSign] = useState<String>("");
-  // const [expertSign, setExpertSign] = useState(false);
+	let bouncyCheckboxRef: BouncyCheckbox | null = null;
+	const [sign, setSign] = useState<String>("");
+  const [expertSign, setExpertSign] = useState(false);
 
 	const { mission } = route.params;
 
@@ -86,32 +86,32 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 		}, 250);
 	}, []);
 
-	// const launchCamera = () => {
-	// 	ImagePicker.launchCamera({
-	// 		mediaType: 'photo',
-	// 		presentationStyle: 'pageSheet',
-	// 		includeBase64: true,
-	// 		quality: 0.4,
-	// 		maxWidth: 800,
-	// 		maxHeight: 800,
-	// 	}, (response) => {
-	// 		if (response.didCancel) {
-  //       console.log('User cancelled image picker by pressing back button');
-	// 		} else if (response.errorCode) {
-	// 			console.log("error code", response.errorCode)
-  //     } else if (response.errorMessage) {
-	// 			console.log('error message', response.errorMessage)
-  //     } else {
-	// 			if (response && response.assets){
-	// 				setCurrentPrestationDetails({ ...currentPrestationDetails, image: response.assets[0].base64 ?? "" });
-	// 				setShowImage(true);
-	// 			}
-	// 		}
-	// 	});
-	// }
+	const launchCamera = () => {
+		ImagePicker.launchCamera({
+			mediaType: 'photo',
+			presentationStyle: 'pageSheet',
+			includeBase64: true,
+			quality: 0.4,
+			maxWidth: 800,
+			maxHeight: 800,
+		}, (response) => {
+			if (response.didCancel) {
+        console.log('User cancelled image picker by pressing back button');
+			} else if (response.errorCode) {
+				console.log("error code", response.errorCode)
+      } else if (response.errorMessage) {
+				console.log('error message', response.errorMessage)
+      } else {
+				if (response && response.assets){
+					setCurrentPrestationDetails({ ...currentPrestationDetails, image: response.assets[0].base64 ?? "" });
+					setShowImage(true);
+				}
+			}
+		});
+	}
 
 	function reset () {
-		// setShowImage(false);
+		setShowImage(false);
 		setError(false)
 		setCurrentPrestationDetails({} as PrestationType);
 		setModalVisible(!modalVisible);
@@ -141,11 +141,11 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	}
 
 	function close () {
-		// console.log(`Signature => ${sign}, expertSign => ${expertSign}`)
-		// if (!isSigned()) {	
-		// 	Alert.alert("Attention!", "Veuillez apposer et valider votre signature.");
-		// 	return;
-		// }
+		console.log(`Signature => ${sign}, expertSign => ${expertSign}`)
+		if (!isSigned()) {	
+			Alert.alert("Attention!", "Veuillez apposer et valider votre signature.");
+			return;
+		}
 		(async () => {
 			let network = await Network.isOk();
 			if (network) {
@@ -157,16 +157,16 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 						vehicle_state_id: selectedStatus
 					})
 					await closeMission(mission.id.toString(), {
-						// signature: sign,
-						// signedByClient: !expertSign,
+						signature: sign,
+						signedByClient: !expertSign,
 					});
 				}
 			} else {
 				Storage.save({
 					type: "closedMissions",
 					mission_id: mission.id,
-					// signature: sign,
-					// signedByClient: !expertSign
+					signature: sign,
+					signedByClient: !expertSign
 				});
 			}
 			navigation.navigate("planning", {
@@ -185,27 +185,27 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 	
 	function showCloseModal () {
 		setCloseModalVisible(!closeModalVisible);
-		// setSign("");
-		// setExpertSign(false)
+		setSign("");
+		setExpertSign(false)
 	}
 
-	// const isSigned = () => {
-	// 	return sign.length > 0;
-	// }
+	const isSigned = () => {
+		return sign.length > 0;
+	}
 
-	// async function onDelete(id: number = 0) {
-	// 	if (id) {
-	// 		await removePrestation(id);
-	// 		setUpdate(!update);
-	// 	}
-	// }
+	async function onDelete(id: number = 0) {
+		if (id) {
+			await removePrestation(id);
+			setUpdate(!update);
+		}
+	}
 
-	// async function onEdit(id: number, body: PrestationEditType) {
-	// 	if (id) {
-	// 		await editPrestation(id, body);
-	// 		setUpdate(!update);
-	// 	}
-	// }
+	async function onEdit(id: number, body: PrestationEditType) {
+		if (id) {
+			await editPrestation(id, body);
+			setUpdate(!update);
+		}
+	}
 
 	return (
 		<View style={styles.view}>
@@ -230,8 +230,8 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 												key={index} 
 												prestation={prestation} 
 												isFinished={mission.isFinished} 
-												// onDelete={onDelete} 
-												// onEdit={onEdit}
+												onDelete={onDelete} 
+												onEdit={onEdit}
 											/>
 										))
 									) : (
@@ -283,10 +283,6 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					style={{ height: 300 }}
 			>
 				<View style={styles.modal}>
-					{/* <Text style={{ color: "black", fontSize: 30, textAlign: "center", marginBottom: 60, marginTop: 60, fontWeight: "bold" }}>
-						En cours de développement...
-					</Text> */}
-					{/* <SoftButton title="Fermer" onPress={() => { setModalVisible(!modalVisible) }} /> */}
 					<View style={styles.form}>
 						{
 							error ? (
@@ -299,7 +295,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 						<TextInput style={styles.input} onChangeText={text => setCurrentPrestationDetails({...currentPrestationDetails, label: text})}/>
 						<Text style={styles.label}>Description</Text>
 						<TextInput style={styles.input} onChangeText={text => setCurrentPrestationDetails({...currentPrestationDetails, description: text})}/>
-						{/* <TouchableOpacity onPress={launchCamera} style={{marginTop: 12}}>
+						<TouchableOpacity onPress={launchCamera} style={{marginTop: 12}}>
 							<Text style={styles.label}>Joindre une photo</Text>
 						</TouchableOpacity>
 						{
@@ -308,7 +304,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 							) : (
 								<></>
 							)
-						} */}
+						}
 					</View>
 					<SoftButton title="Créer la prestation" onPress={submit} css={{marginTop: 2}}/>
 					<SoftButton title="Annuler" onPress={showModal} css={{marginTop: 2}}/>
@@ -325,10 +321,7 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 					scrollEnabled={false}
 				>
 					<Text style={styles.title}>Signature</Text>
-					<Text style={{ color: "black", fontSize: 30, textAlign: "center", marginBottom: 60, marginTop: 60, fontWeight: "bold" }}>
-						En cours de développement...
-					</Text>
-					{/* <View style={styles.sign}>
+					<View style={styles.sign}>
 						<Signature
 							onOK={(img) => setSign(img.split(",")[1])}
 							descriptionText=""
@@ -342,8 +335,8 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 							minWidth={2}
 							maxWidth={2}
 						/>
-					</View> */}
-					{/* <BouncyCheckbox
+					</View>
+					<BouncyCheckbox
 							style={{ marginTop: 16, marginBottom: 16 }}
 							ref={(ref: any) => (bouncyCheckboxRef = ref)}
 							isChecked={expertSign}
@@ -354,12 +347,12 @@ export default function Expertise({ navigation, route }: Props): JSX.Element {
 								textDecorationLine: "none",
 							}}
 							onPress={() => setExpertSign(!expertSign)}
-						/> */}
+						/>
 					<SoftButton 
 						title="Clôturer l'expertise" 
 						onPress={close} 
 						css={{marginTop: 2}}
-						// disabled={!isSigned()}
+						disabled={!isSigned()}
 					/>
 					<SoftButton title="Annuler" onPress={showCloseModal} css={{marginTop: 2 }}/>
 				</ScrollView>
@@ -423,8 +416,7 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.Primary,
 		padding: 20,
 		borderRadius: 10,
-		// maxHeight: 660,
-		maxHeight: 450
+		maxHeight: 660
 	},
 	input: {
 		borderWidth: 1,

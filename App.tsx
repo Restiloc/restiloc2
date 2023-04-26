@@ -27,11 +27,11 @@ import FinishedMissions from 'src/screens/FinishedMissions';
  */
 import { authenticated, login, logout } from 'src/services/api/Auth';
 import { Credentials } from 'src/Types';
-// import Observer from 'src/services/Observer';
+import Observer from 'src/services/Observer';
 
 enableLatestRenderer();
 
-// Observer.networkObserver();
+Observer.networkObserver();
 
 const Stack = createNativeStackNavigator();
 
