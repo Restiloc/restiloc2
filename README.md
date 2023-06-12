@@ -9,14 +9,14 @@
     Restiloc app but in React Native 🌟
   </p>
 
-<a href="https://alexishenry.eu/docs/guide/repositories/orgs/restiloc/mobile"><strong>Documentation »</strong></a>
+<a href="https://github.com/Restiloc/docs"><strong>Documentation »</strong></a>
 
 <h4>
-    <a href="https://restiloc.space">Go to the site</a>
+    <a href="https://restiloc.github.io/landing/">Go to the site</a>
   <span> · </span>
-    <a href="https://github.com/Restiloc/restiloc2/issues">Report a bug</a>
+    <a href="https://github.com/Restiloc/restiloc/issues">Report a bug</a>
   <span> · </span>
-    <a href="https://github.com/Restiloc/restiloc2/issues">I have an idea</a>
+    <a href="https://github.com/Restiloc/restiloc/issues">I have an idea</a>
   </h4>
 </div>
 
